@@ -1,0 +1,14 @@
+{
+  "resourceName": "s3flutter3storage",
+  "bucketName": "flutter3-storage",
+  "policyUUID": "2c94682d",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ]
+}

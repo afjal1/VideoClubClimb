@@ -1,0 +1,18 @@
+enum FileType {
+  VIDEO
+  PHOTOS
+  TEXT
+}
+
+type File @model @auth(rules: [{allow: public}, {allow: owner}]) {
+  id: ID!
+  name: String!
+  type: FileType!
+  category: String!
+  description: String
+  ownerID: String!
+  grade: Int!
+  s3key: String!
+  picsS3key: String
+}
+   

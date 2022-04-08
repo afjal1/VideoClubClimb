@@ -1,0 +1,110 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-flutter3-staging-153730-authRole",
+      "UnauthRoleArn": "arn:aws:iam::775111127268:role/amplify-flutter3-staging-153730-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::775111127268:role/amplify-flutter3-staging-153730-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-flutter3-staging-153730-deployment",
+      "UnauthRoleName": "amplify-flutter3-staging-153730-unauthRole",
+      "StackName": "amplify-flutter3-staging-153730",
+      "StackId": "arn:aws:cloudformation:us-east-1:775111127268:stack/amplify-flutter3-staging-153730/425ac410-55e1-11ec-aab6-0a492b04931b",
+      "AmplifyAppId": "d1goxhh8axr82i"
+    }
+  },
+  "auth": {
+    "flutter3": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "frontendAuthConfig": {
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "output": {
+        "UserPoolId": "us-east-1_ud0JjjUNI",
+        "AppClientIDWeb": "70c636tmefog5458d196d1vor1",
+        "AppClientID": "5bqm5fpvj8611kup97r38385od",
+        "IdentityPoolId": "us-east-1:9f671a94-4d63-4783-9c94-fce0c15991a5",
+        "UserPoolArn": "arn:aws:cognito-idp:us-east-1:775111127268:userpool/us-east-1_ud0JjjUNI",
+        "IdentityPoolName": "testAuthIdentityPool__staging",
+        "UserPoolName": "flutter3"
+      },
+      "lastPushTimeStamp": "2022-03-04T18:51:31.688Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-flutter3-staging-153730-deployment/amplify-cfn-templates/auth/flutter3-cloudformation-template.json",
+        "logicalId": "authflutter3"
+      }
+    }
+  },
+  "storage": {
+    "s3flutter3storage": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "output": {
+        "BucketName": "flutter3-storage153730-staging",
+        "Region": "us-east-1"
+      },
+      "lastPushTimeStamp": "2022-03-04T18:51:31.689Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-flutter3-staging-153730-deployment/amplify-cfn-templates/storage/cloudformation-template.json",
+        "logicalId": "storages3flutter3storage"
+      }
+    }
+  },
+  "api": {
+    "flutter3": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authflutter3"
+            }
+          },
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            },
+            {
+              "authenticationType": "API_KEY",
+              "apiKeyConfig": {
+                "apiKeyExpirationDays": 30,
+                "description": "api key description"
+              }
+            }
+          ]
+        },
+        "GraphQLAPIIdOutput": "kzpr5jegevc5zebnrc5rpz7phm",
+        "GraphQLAPIEndpointOutput": "https://jaajfl2j7bbydfwebhmkivdc4i.appsync-api.us-east-1.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-mfjjxrmo5bewbhcoj4k2zdiani"
+      },
+      "lastPushTimeStamp": "2022-03-04T18:51:31.700Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-flutter3-staging-153730-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apiflutter3"
+      },
+      "lastPushDirHash": "mWtrHZORKm5TngglpZC2E6RlMwE="
+    }
+  }
+}
