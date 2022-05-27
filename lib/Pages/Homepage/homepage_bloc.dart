@@ -8,6 +8,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState>{
 
   DataRepo dataRepo;
 
+
   HomepageBloc({required this.dataRepo}) : super(HomepageState()){
 
     print('**     Homepage Bloc        **');

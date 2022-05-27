@@ -24,51 +24,51 @@ class _ZoneMenuState extends State<ZoneMenu> {
 
   @override
   Widget build(BuildContext context) {
-
+    Size size = MediaQuery.of(context).size;
 
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('assets/bgdibujos.jpg'), fit: BoxFit.cover)),
+              image: AssetImage('assets/bgdibujos.jpg'),
+              fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.orangeAccent,
           iconTheme: const IconThemeData(color: Colors.white),
           leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios_rounded,
-              size: 31,
+            icon: Icon(Icons.arrow_back_ios_rounded,
+              size: MediaQuery.of(context).size.height*	0.0417,
             ),
             onPressed: () {
               context.read<VideosCubit>().showInicio();
             },
           ),
-          title: const Text(
+          title: Text(
             "Zone Climb",
             style: TextStyle(
-                fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+                fontSize: size.width * 0.07125,
+                color: Colors.white,
+                fontWeight: FontWeight.bold),
           ),
           actions: [
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.delete_forever,
                 color: Colors.red,
-                size: 40,
+                size: MediaQuery.of(context).size.height*	0.0538,
               ),
-
-
               onPressed: () async {
                 context.read<ZoneMenuBloc>().add(DeleteEverything());
               },
             ),
-            const SizedBox(
-              width: 10,
+            SizedBox(
+              width: MediaQuery.of(context).size.height*	0.0134,
             ),
           ],
           centerTitle: true,
-          elevation: 5,
-          toolbarHeight: 70,
+          elevation: MediaQuery.of(context).size.height*	0.0067,
+          toolbarHeight: MediaQuery.of(context).size.height*	0.0941, //Tamaño de la toolbar
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(0),
@@ -77,13 +77,9 @@ class _ZoneMenuState extends State<ZoneMenu> {
         ),
         body: BlocBuilder<ZoneMenuBloc, ZoneMenuState>(
           builder: (BuildContext context, state) {
-
-
-
-
-
             return (context.watch<ZoneMenuBloc>().state.formSubmissionState
-                    is FormSubmitting || context.watch<ZoneMenuBloc>().state.deleting==true)
+                        is FormSubmitting ||
+                    context.watch<ZoneMenuBloc>().state.deleting == true)
                 ? const Center(
                     child: CircularProgressIndicator(
                       color: Colors.teal,
@@ -91,12 +87,13 @@ class _ZoneMenuState extends State<ZoneMenu> {
                   )
                 : ListView.builder(
                     shrinkWrap: true,
-                    padding: const EdgeInsets.only(top: 60),
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height*	0.0403),
                     itemCount: state.totalCategories,
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: 20), //entre sector y sector
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.height * 0.0269), //entre sector y sector
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -124,44 +121,49 @@ class _ZoneMenuState extends State<ZoneMenu> {
                                       .showZoneVideos(category, index);
                                 },
                                 child: Card(
-                                  elevation: 10,
+                                  elevation: MediaQuery.of(context).size.height*	0.0134,
                                   color: Colors.orange.shade50,
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 30),
+                                  margin: EdgeInsets.symmetric(
+                                      vertical: MediaQuery.of(context).size.height*	0.0067,
+                                      horizontal: MediaQuery.of(context).size.width*	0.0833
+                                  ),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        20), // if you need this
-                                    side: const BorderSide(
+                                    borderRadius: BorderRadius.circular(20),
+                                    // if you need this
+                                    side: BorderSide(
                                       color: Colors.orange,
-                                      width: 2,
+                                      width: size.width * 0.0056,
                                     ),
                                   ),
+
                                   child: Row(
                                     children: [
-                                      Container(
-                                        height: 50,
-                                        margin: const EdgeInsets.only(
-                                            right: 20,
-                                            left: 10,
-                                            bottom: 10,
-                                            top: 10),
+                                      Container( height: MediaQuery.of(context).size.height*	0.0672,
+                                        margin: EdgeInsets.only(
+                                            right: MediaQuery.of(context).size.width*	0.0556,
+                                            left: MediaQuery.of(context).size.width*	0.0278,
+                                            bottom: MediaQuery.of(context).size.height*	0.0134,
+                                            top: MediaQuery.of(context).size.height*	0.0134),
                                         child: const Image(
                                           image: AssetImage('assets/glogo.png'),
                                         ),
                                       ),
                                       Text(
                                         state.categories[index],
-                                        style: const TextStyle(fontSize: 24),
+
+                                        style: TextStyle(
+                                            fontSize: size.width * 0.0684),
                                       ),
+
                                       const Expanded(child: SizedBox()),
-                                      const Icon(
-                                        Icons.play_arrow_outlined,
-                                        size: 40,
+
+                                      Icon (Icons.play_arrow_outlined,
+                                        size: size.height * 0.0538,
                                         color: Colors.orange,
                                       ),
-                                      const SizedBox(
-                                        width: 10,
-                                      )
+
+                                      SizedBox(width: size.width * 0.0278,)
+
                                     ],
                                   ),
                                 )),

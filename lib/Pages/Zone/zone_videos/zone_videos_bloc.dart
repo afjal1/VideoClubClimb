@@ -14,8 +14,13 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
   ZoneVideosBloc({
     required this.dataRepo,
     required this.category,
-  }) : super(ZoneVideosState(files: [], categories: [], searchedVideos: [], images: [], videoUrls: [])) {
-
+  }) : super(ZoneVideosState(
+    files: [],
+    categories: [],
+    searchedVideos: [],
+    images: [],
+    videoUrls: [],
+  )) {
     on<DeleteVideoZoneButtonClickedEvent>(_onDeleteVideoButtonClickedEvent);
     // on<CategoryClickedZoneVideosEvent>(_getVideosInACategoryZoneVideo);
     on<GetZoneVideosEvent>(_getZoneVideos);
@@ -25,13 +30,15 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
     on<Search>(_search);
     on<SearchByEvent>(_searchByChanged);
 
-    on<GetVideoFiles>(_getVideoFiles); ///no hace nada
+    on<GetVideoFiles>(_getVideoFiles);
+
+    ///no hace nada
   }
 
   FutureOr<void> _onDeleteVideoButtonClickedEvent(
       DeleteVideoZoneButtonClickedEvent event,
-      Emitter<ZoneVideosState> emit) async {
-
+      Emitter<ZoneVideosState> emit,
+      ) async {
     print('TODO -- implement this');
 
     // List<String> videos = await dataRepo.getSectorVideos(category);
@@ -83,8 +90,7 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
   //   }
   // }
 
-  FutureOr<void> _getZoneVideos(
-      GetZoneVideosEvent event, Emitter<ZoneVideosState> emit) async {
+  FutureOr<void> _getZoneVideos(GetZoneVideosEvent event, Emitter<ZoneVideosState> emit) async {
     // emit(state.copyWith(formSubmissionState: FormSubmitting()));
 
     // List<File> files = await dataRepo.listFilesByCategory(category);
@@ -98,8 +104,7 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
   //   emit(state.copyWith(totalGrados: grados.length, grados: grados, ));
   // }
 
-  FutureOr<void> _toggleSearching(
-      ToggleSearching event, Emitter<ZoneVideosState> emit) {
+  FutureOr<void> _toggleSearching(ToggleSearching event, Emitter<ZoneVideosState> emit) {
     if (state.isSearching) {
       emit(state.copyWith(isSearching: false));
     } else {
@@ -107,108 +112,105 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
     }
   }
 
-  FutureOr<void> _searchKeywordChanged(
-      SearchKeywordChanged event, Emitter<ZoneVideosState> emit) {
+  FutureOr<void> _searchKeywordChanged(SearchKeywordChanged event, Emitter<ZoneVideosState> emit) {
     emit(state.copyWith(searchedKeyword: event.value));
   }
 
   FutureOr<void> _search(Search event, Emitter<ZoneVideosState> emit) {
     List<File> searchedVideos = [];
-
+    List<String>? searchImages = [];
+    List<String>? searchVideoUrls = [];
 
     if (state.searchBy == SearchBy.name) {
       for (int i = 0; i < state.files.length; i++) {
-        if (state.files[i].name.contains(state.searchedKeyword)) {
+        if (state.files[i].name!.contains(state.searchedKeyword)) {
           searchedVideos.add(state.files[i]);
+          searchImages.add(state.images[i]);
+          searchVideoUrls.add(state.videoUrls[i]);
         }
       }
     } else if (state.searchBy == SearchBy.grado) {
-
       int grade = mapGradeToIndex(event.grado);
 
       for (int i = 0; i < state.files.length; i++) {
         if (state.files[i].grade == grade) {
           searchedVideos.add(state.files[i]);
+          searchImages.add(state.images[i]);
+          searchVideoUrls.add(state.videoUrls[i]);
         }
       }
     }
 
-    emit(state.copyWith(searchedVideos: searchedVideos));
+    emit(
+      state.copyWith(
+        totalVideos: searchedVideos,
+        searchImages: searchImages,
+        searchVideoUrls: searchVideoUrls,
+      ),
+    );
   }
 
-  FutureOr<void> _searchByChanged(
-      SearchByEvent event, Emitter<ZoneVideosState> emit) {
+  FutureOr<void> _searchByChanged(SearchByEvent event, Emitter<ZoneVideosState> emit) {
     emit(state.copyWith(searchBy: event.searchBy));
   }
 
-
   ///no hace nada
-  FutureOr<void> _getVideoFiles(
-      GetVideoFiles event, Emitter<ZoneVideosState> emit) async {
-    emit(state.copyWith(formSubmissionState: FormSubmitting()));
+  FutureOr<void> _getVideoFiles(GetVideoFiles event, Emitter<ZoneVideosState> emit) async {
+    try {
+      emit(state.copyWith(formSubmissionState: FormSubmitting()));
 
-    List<File> files = await dataRepo.listFilesByCategory(category);
-    List<String> images = [];
-    List<String> url = [];
+      List<File> files = await dataRepo.listFilesByCategory(category);
+      List<String> images = [];
+      List<String> url = [];
 
-    for(int i = 0; i < files.length; i++){
-      String link = await dataRepo.getPhotoLink(files[i]);
-      images.add(link);
+      for (int i = 0; i < files.length; i++) {
+        String link = await dataRepo.getPhotoLink(files[i]);
+        images.add(link);
+      }
+
+      for (int i = 0; i < files.length; i++) {
+        String link = await dataRepo.getVideoLink(files[i]);
+        url.add(link);
+      }
+
+      print('len: ' + images.length.toString());
+      print(url.toString());
+      emit(state.copyWith(totalFiles: files.length, files: files, images: images, videoUrls: url));
+      emit(state.copyWith(formSubmissionState: FormSubmissionSuccessful()));
+    } catch (e) {
+      print('ZoneVideosBloc._getVideoFiles: $e');
     }
-
-    for(int i = 0; i < files.length; i++){
-      String link = await dataRepo.getVideoLink(files[i]);
-      url.add(link);
-    }
-
-    print('len: ' + images.length.toString());
-    print(url.toString());
-    emit(state.copyWith(totalFiles: files.length, files: files, images: images, videoUrls: url));
-    emit(state.copyWith(formSubmissionState: FormSubmissionSuccessful()));
   }
 }
-
 
 int mapGradeToIndex(String? newValue) {
   int gradoIndex = 0;
 
-  if(newValue == '4'){
+  if (newValue == '4') {
     gradoIndex = 0;
-  }
-  else if(newValue == '5'){
+  } else if (newValue == '5') {
     gradoIndex = 1;
-  }
-  else if(newValue == '5+'){
+  } else if (newValue == '5+') {
     gradoIndex = 2;
-  }
-  else if(newValue == '6a'){
+  } else if (newValue == '6a') {
     gradoIndex = 3;
-  }
-  else if(newValue == '6a+'){
+  } else if (newValue == '6a+') {
     gradoIndex = 4;
-  }
-  else if(newValue == '6b'){
+  } else if (newValue == '6b') {
     gradoIndex = 5;
-  }
-  else if(newValue == '6b+'){
+  } else if (newValue == '6b+') {
     gradoIndex = 6;
-  }
-  else if(newValue == '6c'){
+  } else if (newValue == '6c') {
     gradoIndex = 7;
-  }
-  else if(newValue == '6c+'){
+  } else if (newValue == '6c+') {
     gradoIndex = 8;
-  }
-  else if(newValue == '7a'){
+  } else if (newValue == '7a') {
     gradoIndex = 9;
-  }
-  else if(newValue == '7a+'){
+  } else if (newValue == '7a+') {
     gradoIndex = 10;
-  }
-  else if(newValue == '7b'){
+  } else if (newValue == '7b') {
     gradoIndex = 11;
-  }
-  else if(newValue == '7b+'){
+  } else if (newValue == '7b+') {
     gradoIndex = 12;
   }
 

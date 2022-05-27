@@ -3,7 +3,6 @@ abstract class UploadVideoEvent{}
 
 class UploadVideoCategoryEvent extends UploadVideoEvent{}
 
-
       ///select video
 class FilePickerUploadVideoButtonClickedEvent extends UploadVideoEvent{}
 
@@ -14,8 +13,6 @@ class VideoSelectedUploadEvent extends UploadVideoEvent{
 
   VideoSelectedUploadEvent({required this.video, required this.image});
 }
-
-
 
       ///select image
 class ImageFilePickerUploadVideoButtonClickedEvent extends UploadVideoEvent{}

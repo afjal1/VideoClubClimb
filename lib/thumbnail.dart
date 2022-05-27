@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:video_compress/video_compress.dart';
+import 'package:videoclubclimb/functions/native_functions.dart';
 
 class VideoThumbnail extends StatefulWidget {
   @override
@@ -26,11 +26,12 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
       //   file = File(pickedFile!.path);
       // }
 
-      FilePickerResult? pickedFile = await FilePicker.platform.pickFiles(
-        type: FileType.video,
-      );
+      // FilePickerResult? pickedFile = await FilePicker.platform.pickFiles(
+      //   type: FileType.video,
+      // );
+      // file=File(pickedFile!.files.first.path!);
 
-      file=File(pickedFile!.files.first.path!);
+      file = await mFilePicker(type: EFileType.video);
 
       if (file != null) {
         _thumbnailFile = await VideoCompress.getFileThumbnail(file.path);
@@ -47,7 +48,10 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(child: ElevatedButton(onPressed: _getVideoThumbnail, child: Text('Get File Thumbnail'))),
+            Container(
+                child: ElevatedButton(
+                    onPressed: _getVideoThumbnail,
+                    child: Text('Get File Thumbnail'))),
             _buildThumbnail(),
           ],
         ),

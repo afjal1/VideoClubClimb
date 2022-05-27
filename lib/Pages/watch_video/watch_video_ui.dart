@@ -1,4 +1,3 @@
-
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:videoclubclimb/Pages/watch_video/watch_video_bloc.dart';
@@ -15,18 +14,11 @@ class WatchVideo extends StatefulWidget {
 }
 
 class _WatchVideoState extends State<WatchVideo> {
-
-
   late ChewieController chewieController;
 
   @override
   void initState() {
-
-
-
-    context
-        .read<WatchVideosBloc>().add(GetVideoEvent());
-
+    context.read<WatchVideosBloc>().add(GetVideoEvent());
     super.initState();
   }
 
@@ -39,15 +31,13 @@ class _WatchVideoState extends State<WatchVideo> {
 
   @override
   Widget build(BuildContext context) {
-
-
     chewieController = ChewieController(
         allowPlaybackSpeedChanging: true,
-
-        videoPlayerController: VideoPlayerController.network(context.watch<WatchVideosBloc>().state.url),
+        videoPlayerController: VideoPlayerController.network(
+            context.watch<WatchVideosBloc>().state.url),
         fullScreenByDefault: true,
         autoInitialize: true,
-        autoPlay: false,
+        autoPlay: true,
         looping: false,
         showControls: true,
         errorBuilder: (BuildContext context, error) {
@@ -56,18 +46,17 @@ class _WatchVideoState extends State<WatchVideo> {
           );
         });
 
-    return  Scaffold(
-        appBar: AppBar(title: Text(context.read<WatchVideosBloc>().state.UIName)),
+    Size size = MediaQuery.of(context).size;
+
+    return Scaffold(
+        appBar:
+            AppBar(title: Text(context.read<WatchVideosBloc>().state.UIName)),
         body: BlocBuilder<WatchVideosBloc, WatchVideosState>(
-        builder: (BuildContext context, state) {
-      return context.watch<WatchVideosBloc>().state.loaded ?
-      Center(child: Chewie(controller: chewieController)):    const Center(child: CircularProgressIndicator.adaptive())
-    ;
+            builder: (BuildContext context, state) {
+          return context.watch<WatchVideosBloc>().state.loaded
+              ? Center(child: Chewie(controller: chewieController))
+              : const Center(child: CircularProgressIndicator.adaptive());
         }));
-
-
-
-
   }
 }
 

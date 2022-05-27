@@ -236,8 +236,6 @@ class MyVideosUI extends StatefulWidget {
 
 class _MyVideosUIState extends State<MyVideosUI> {
 
-
-
   @override
   void initState() {
     context.read<MyVideosBloc>().add(LoadMyVideosEvent());
@@ -246,10 +244,13 @@ class _MyVideosUIState extends State<MyVideosUI> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('assets/bgdibujos.jpg'), fit: BoxFit.cover)),
+              image: AssetImage('assets/bgdibujos.jpg'),
+              fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -257,39 +258,41 @@ class _MyVideosUIState extends State<MyVideosUI> {
           iconTheme: const IconThemeData(color: Colors.white),
 
           leading: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.arrow_back_ios_rounded,
-              size: 31,
+              size: MediaQuery.of(context).size.height*	0.0417,
             ),
             onPressed: () {
               context.read<VideosCubit>().showMyVideosMenu();
             },
           ),
 
-
-
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 context.read<MyVideosBloc>().state.categories,
+                style: TextStyle (
+                    fontSize: size.width * 	0.07125,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
               ),
               IconButton(
                 onPressed: () {
                   showCustomDialog(context);
                 },
                 splashColor: Colors.redAccent,
-                icon: const Icon(
+                icon:  Icon(
                   Icons.delete,
-                  size: 30,
+                  size: MediaQuery.of(context).size.height*	0.0403,
                   color: Colors.red,
                 ),
               ),
             ],
           ),
 
-          elevation: 5,
-          toolbarHeight: 70, //Tamaño de la toolbar
+          elevation: MediaQuery.of(context).size.height*	0.0067,
+          toolbarHeight: MediaQuery.of(context).size.height*	0.0941, //Tamaño de la toolbar
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(0),
@@ -297,15 +300,13 @@ class _MyVideosUIState extends State<MyVideosUI> {
             ),
           ),
         ),
+
         body: Stack(children: [
           BlocBuilder<MyVideosBloc, MyVideosState>(
             builder: (BuildContext context, state) {
-
               if(context.watch<MyVideosBloc>().state.items.isEmpty) {
                 return const Center(child: Text("No Content Here"));
               }
-
-
 
               return context.watch<MyVideosBloc>().state.items.first.type==FileType.PHOTOS
                   ? const Center(
@@ -315,7 +316,7 @@ class _MyVideosUIState extends State<MyVideosUI> {
                     )
                   : ListView.builder(
                       shrinkWrap: true,
-                      padding: const EdgeInsets.only(top: 20),
+                      padding:  EdgeInsets.only(top: MediaQuery.of(context).size.height*	0.0269),
                       itemCount: context
                           .watch<MyVideosBloc>()
                           .state
@@ -324,62 +325,41 @@ class _MyVideosUIState extends State<MyVideosUI> {
                       itemBuilder: (context, index) {
                         return Center(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*	0.0067),
                             child: Column(
                               children: [
                                 InkWell(
                                   splashColor: Colors.orange,
                                   onTap: () {
                                     context.read<VideosCubit>().watchVideo(
-                                          category: context
-                                              .read<MyVideosBloc>()
-                                              .state
-                                              .items
-                                              .elementAt(index)
-                                              .category,
-                                          name: context
-                                              .read<MyVideosBloc>()
-                                              .state
-                                              .items
-                                              .elementAt(index)
-                                              .name,
-                                          UIName: context
-                                              .read<MyVideosBloc>()
-                                              .state
-                                              .items
-                                              .elementAt(index)
-                                              .name,
-                                          url: context
-                                              .read<MyVideosBloc>()
-                                              .state
-                                              .items
-                                              .elementAt(index)
-                                              .s3key,
+                                      category: context.read<MyVideosBloc>().state.items.elementAt(index).category!,
+                                      name: context.read<MyVideosBloc>().state.items.elementAt(index).name!,
+                                      UIName: context.read<MyVideosBloc>().state.items.elementAt(index).name!,
+                                      url: context.read<MyVideosBloc>().state.items.elementAt(index).s3key!,
                                         );
                                   },
                                   child: Card(
-
                                     elevation: 10,
                                     color: Colors.orange.shade50,
-
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 5, horizontal: 20),
+                                    margin:  EdgeInsets.symmetric(
+                                        vertical: 5,
+                                        horizontal: MediaQuery.of(context).size.width*	0.0556),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          20), // if you need this
+                                      borderRadius: BorderRadius.circular(20), // if you need this
                                       side: const BorderSide(
                                         color: Colors.orange,
                                         width: 2,
                                       ),
                                     ),
+
                                     child: Row(
                                       children: [
 
-                                        SizedBox(width: 10,),
+                                        SizedBox(width: MediaQuery.of(context).size.height*	0.0134,),
+
                                        CircleAvatar(
                                          backgroundColor: Colors.transparent,
                                          child: ClipRRect(
-
                                             child: Image.network(
                                               context
                                                   .read<MyVideosBloc>()
@@ -397,54 +377,48 @@ class _MyVideosUIState extends State<MyVideosUI> {
                                                               Colors.transparent)),
                                             ),
                                       borderRadius: BorderRadius.circular(15),
-
-
                                           ),
                                          maxRadius: 30,
                                        ),
-                                        const SizedBox(
-                                          width: 15,
+
+                                        SizedBox(
+                                          width: MediaQuery.of(context).size.width*	0.0417,
                                         ),
+
                                         Column(
                                           children: [
+                                            SizedBox(height: MediaQuery.of(context).size.height*	0.0134,),
 
-                                            SizedBox(height: 10,),
                                             Text(
-                                              context
-                                                  .read<MyVideosBloc>()
-                                                  .state
-                                                  .items
-                                                  .elementAt(index)
-                                                  .name,
-                                              style: const TextStyle(
-                                                fontSize: 15,
+                                              context.read<MyVideosBloc>().state.items.elementAt(index).name!,
+                                              style: TextStyle(
+                                                fontSize: size.width * 0.04275,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                               textAlign: TextAlign.start,
                                             ),
-                                            SizedBox(height: 5),
+
+                                            SizedBox(height: MediaQuery.of(context).size.height*	0.0067),
+
                                             Text(
-                                              getTextFromGrade(context
-                                                  .read<MyVideosBloc>()
-                                                  .state
-                                                  .items
-                                                  .elementAt(index)
-                                                  .grade),
-                                              style: const TextStyle(
-                                                fontSize: 15,
+                                              getTextFromGrade(context.read<MyVideosBloc>().state.items.elementAt(index).grade!),
+                                              style: TextStyle(
+                                                fontSize: size.width * 0.04275,
                                               ),
                                             ),
-                                            SizedBox(height: 5),
+
+                                            SizedBox(height: MediaQuery.of(context).size.height*	0.0067),
+
                                             Container(
                                               color: getColorFromGrade(context
                                                   .read<MyVideosBloc>()
                                                   .state
                                                   .items[index]
-                                                  .grade),
-                                              height: 15,
-                                              width: 15,
+                                                  .grade!),
+                                              height: MediaQuery.of(context).size.height*	0.0202,
+                                              width: MediaQuery.of(context).size.width*	0.0417,
                                             ),
-                                            SizedBox(height: 10,)
+                                            SizedBox(height: MediaQuery.of(context).size.height*	0.0134,)
                                           ],
                                         ),
                                         const Expanded(
@@ -453,26 +427,20 @@ class _MyVideosUIState extends State<MyVideosUI> {
                                           style: ElevatedButton.styleFrom(
                                             primary: Colors.deepOrange,
                                           ),
-                                          child: const Icon(
+                                          child: Icon(
                                             Icons.delete_outline_rounded,
                                             color: Colors.white,
-                                            size: 30,
+                                            size: MediaQuery.of(context).size.height*	0.0403,
                                           ),
                                           onPressed: () {
-
-
                                             context.read<MyVideosBloc>().add(
                                                 DeleteVideoButtonClickedEvent(
                                                     index: index));
-
-
                                           },
-
-
-
                                         ),
-                                        const SizedBox(
-                                          width: 15,
+
+                                        SizedBox(
+                                          width: MediaQuery.of(context).size.width*	0.0417,
                                         ),
                                       ],
                                     ),
@@ -556,7 +524,7 @@ class _MyVideosUIState extends State<MyVideosUI> {
                 ],
               ),
             ),
-            margin: const EdgeInsets.symmetric(horizontal: 20),
+            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*	0.0556),
             decoration: BoxDecoration(
                 color: Colors.white, borderRadius: BorderRadius.circular(40)),
           ),

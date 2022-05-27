@@ -6,68 +6,58 @@ import 'package:videoclubclimb/Pages/Upload/upload_menu/upload_video_menu_event.
 import 'package:videoclubclimb/Pages/Upload/upload_menu/upload_video_menu_state.dart';
 
 
-
 class UploadVideoMenu extends StatefulWidget {
 
   const UploadVideoMenu({Key? key}) : super(key: key);
-
 
   @override
   _UploadVideoMenuState createState() => _UploadVideoMenuState();
 }
 
 class _UploadVideoMenuState extends State<UploadVideoMenu> {
-
-
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
     context.read<UploadVideoMenuBloc>().add(GetCategoriesUploadVideoMenuEvent());
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
 
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
               image: AssetImage('assets/bgdibujos.jpg'),
-
               fit: BoxFit.cover
           )
       ),
-
       child: Scaffold(
-
         backgroundColor: Colors.transparent,
-
-
         appBar: AppBar(
-
           backgroundColor: Colors.orangeAccent,
           iconTheme: const IconThemeData(color: Colors.white),
-
           leading: IconButton(
-            icon: const Icon (Icons.arrow_back_ios_rounded,
-              size: 31,),
+            icon: Icon (Icons.arrow_back_ios_rounded,
+              size: MediaQuery.of(context).size.height*	0.0417,
+            ),
             onPressed: () {
               context.read<VideosCubit>().showInicio();
             },
           ),
 
-          title: const Text (
+          title: Text (
             "Select Zone",
             style: TextStyle (
-                fontSize: 25 ,
+                fontSize: size.width * 0.07125,
                 color: Colors.white,
                 fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
-          elevation: 5,
-          toolbarHeight: 70, //Tamaño de la toolbar
+          elevation: MediaQuery.of(context).size.height*	0.0067,
+          toolbarHeight: MediaQuery.of(context).size.height*	0.0941, //Tamaño de la toolbar
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(0),
@@ -80,17 +70,17 @@ class _UploadVideoMenuState extends State<UploadVideoMenu> {
         body: BlocBuilder<UploadVideoMenuBloc, UploadVideoMenuState>(
           builder: (BuildContext context, state) {
             return ListView.builder(
-
               shrinkWrap: true,
-              padding: const EdgeInsets.only(top: 30, bottom: 60), //distancia columna top
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height*	0.0403), //distancia columna top
               itemCount: state.totalCategories,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 20), //entre sector y sector
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).size.height*	0.0269), //entre sector y sector
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-
                       InkWell(
                         onTap: () {
                           if (context
@@ -101,42 +91,39 @@ class _UploadVideoMenuState extends State<UploadVideoMenu> {
                             context
                                 .read<UploadVideoMenuBloc>()
                                 .add(CategoryClickedUploadVideoMenuEvent(categoryIndex: -1));
-
                             return;
                           }
-
                           context
                               .read<UploadVideoMenuBloc>()
                               .add(CategoryClickedUploadVideoMenuEvent(categoryIndex: index));
-
-
-
                           String category =
                           context.read<UploadVideoMenuBloc>().state.categories[index];
-
                           context.read<VideosCubit>().showUploadVideos(category: category);
-
                         },
 
-
-
                         child: Card(
-                          elevation: 10,
+                          elevation: MediaQuery.of(context).size.height*	0.0134,
                           color: Colors.orange.shade50,
-                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
+                          margin: EdgeInsets.symmetric(
+                              vertical: MediaQuery.of(context).size.height*	0.0067,
+                              horizontal: MediaQuery.of(context).size.width*	0.0833
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20), // if you need this
-                            side: const BorderSide(
+                            side: BorderSide(
                               color: Colors.orange,
-                              width: 2,
+                              width: size.width * 0.0056,
                             ),
-
                           ),
 
                           child: Row(
                             children: [
-                              Container( height: 50,
-                                margin: const EdgeInsets.only(right: 20, left: 10, bottom: 10, top: 10),
+                              Container( height: MediaQuery.of(context).size.height*	0.0672,
+                                margin: EdgeInsets.only(
+                                    right: MediaQuery.of(context).size.width*	0.0556,
+                                    left: MediaQuery.of(context).size.width*	0.0278,
+                                    bottom: MediaQuery.of(context).size.height*	0.0134,
+                                    top: MediaQuery.of(context).size.height*	0.0134),
                                 child: const Image(
                                   image: AssetImage('assets/glogo.png'),
                                 ),
@@ -144,17 +131,18 @@ class _UploadVideoMenuState extends State<UploadVideoMenu> {
 
                               Text(
                                 state.categories[index],
-                                style: const TextStyle(fontSize: 24),
+                                style: TextStyle(
+                                    fontSize: size.width * 0.0684),
                               ),
 
                               const Expanded(child: SizedBox()),
 
-                              const Icon (Icons.play_arrow_outlined,
+                              Icon (Icons.play_arrow_outlined,
+                                size: size.height * 0.0538,
+                                color: Colors.orange,
+                              ),
 
-                                size: 40,
-                                color: Colors.orange,),
-
-                              const SizedBox(width: 10,)
+                              SizedBox(width: size.width * 0.0278,)
 
                             ],
                           ),

@@ -5,7 +5,6 @@ import 'package:videoclubclimb/models/File.dart';
 enum SearchBy { name, grado }
 
 class ZoneVideosState {
-
   /// New
 
   List<File> files;
@@ -13,8 +12,8 @@ class ZoneVideosState {
   List<File> searchedVideos;
   List<String> images;
   List<String> videoUrls;
-  /// =================
 
+  /// =================
 
   int totalCategories;
   int currentCategory;
@@ -27,16 +26,20 @@ class ZoneVideosState {
   SearchBy searchBy;
 
   FormSubmissionState formSubmissionState;
+  List<String> searchImages;
+  List<String> searchVideoUrls;
 
   ZoneVideosState({
-
     /// new
 
     required this.files,
     this.totalFiles = 0,
     required this.searchedVideos,
+    this.searchVideoUrls = const [],
+    this.searchImages = const [],
     required this.images,
     required this.videoUrls,
+
     /// ===================
 
     this.isSearching = false,
@@ -50,14 +53,16 @@ class ZoneVideosState {
   });
 
   ZoneVideosState copyWith({
-
     /// NEW
 
     List<File>? files,
     int? totalFiles,
-    List<File>? searchedVideos,
+    List<File>? totalVideos,
     List<String>? images,
     List<String>? videoUrls,
+    List<File>? searchedVideos,
+    List<String>? searchImages,
+    List<String>? searchVideoUrls,
 
     /// ================
 
@@ -71,20 +76,19 @@ class ZoneVideosState {
     FormSubmissionState? formSubmissionState,
   }) {
     return ZoneVideosState(
-
       /// NEW
-
-      files: files?? this.files,
-      totalFiles: totalFiles?? this.totalFiles,
-      searchedVideos: searchedVideos?? this.searchedVideos,
-      images: images?? this.images,
-      videoUrls: videoUrls?? this.videoUrls,
+      searchVideoUrls: searchVideoUrls ?? this.searchVideoUrls,
+      searchImages: searchImages ?? this.searchImages,
+      files: files ?? this.files,
+      totalFiles: totalFiles ?? this.totalFiles,
+      searchedVideos: totalVideos ?? this.searchedVideos,
+      images: images ?? this.images,
+      videoUrls: videoUrls ?? this.videoUrls,
 
       /// ==========
       totalCategories: totalCategories ?? this.totalCategories,
       currentCategory: currentCategory ?? this.currentCategory,
-      totalVideosInCurrentCategory:
-          totalVideosInCurrentCategory ?? this.totalVideosInCurrentCategory,
+      totalVideosInCurrentCategory: totalVideosInCurrentCategory ?? this.totalVideosInCurrentCategory,
       categories: categories ?? this.categories,
       searchedKeyword: searchedKeyword ?? this.searchedKeyword,
       isSearching: isSearching ?? this.isSearching,

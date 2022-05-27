@@ -1,6 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
-import 'package:file_picker/file_picker.dart';
+//import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:path_provider/path_provider.dart';
@@ -92,14 +92,12 @@ class DataRepo {
   //User Specific Videos
 
   Future<void> listItemsSectoresMenu() async {
-    print(
-        '**********************************          listItemsSectores         DATA REPO     ****************************');
+    print('**********************************          listItemsSectores         DATA REPO     ****************************');
     try {
       final ListResult result = await Amplify.Storage.list();
       items = result.items;
       for (int i = 0; i < items.length; i++) {
-        print(
-            '**********************************************Got items: ${items.elementAt(i).key}');
+        print('**********************************************Got items: ${items.elementAt(i).key}');
       }
     } on StorageException catch (e) {
       print('Error listing items: $e');
@@ -107,8 +105,7 @@ class DataRepo {
   }
 
   Future<List<String>> getCategoriesSectoresMenu() async {
-    print(
-        '**********************************          getCategories SECTORES (VIDEO)         DATA REPO     ****************************');
+    print('**********************************          getCategories SECTORES (VIDEO)         DATA REPO     ****************************');
     await listItems();
     List<String> res = [];
     for (int i = 0; i < items.length; i++) {
@@ -126,8 +123,7 @@ class DataRepo {
   }
 
   List<String> getVideoForUISectoresMenu(String category) {
-    print(
-        '**********************************         getVideoForUI SECTORES          DATA REPO     ****************************');
+    print('**********************************         getVideoForUI SECTORES          DATA REPO     ****************************');
 
     List<String> res = [];
     int start = 0;
@@ -147,8 +143,7 @@ class DataRepo {
   }
 
   List<String> getVideoNamesSectoresMenu(String category) {
-    print(
-        '**********************************        getVideoNames SECTORES          DATA REPO     ****************************');
+    print('**********************************        getVideoNames SECTORES          DATA REPO     ****************************');
     List<String> res = [];
     int start = 0;
     for (int i = 0; i < items.length; i++) {
@@ -166,8 +161,7 @@ class DataRepo {
   }
 
   Future<void> listItemsSectoresVideos() async {
-    print(
-        '**********************************          listItemsSectorVideos         DATA REPO     ****************************');
+    print('**********************************          listItemsSectorVideos         DATA REPO     ****************************');
     try {
       final ListResult result = await Amplify.Storage.list();
       items = result.items;
@@ -179,7 +173,6 @@ class DataRepo {
     }
   }
 
-
   ///NEW FUNCTIONS STARTED
 
   Future<bool> datastoreUploadFile(
@@ -187,13 +180,11 @@ class DataRepo {
       String category,
       String description,
       int grade,
-      FilePickerResult? video,
-      FilePickerResult? photo) async {
-
-
-
-
-
+      File? videoFile,
+      File? photoFile,
+      // FilePickerResult? video,
+      // FilePickerResult? photo,
+      ) async {
     AuthRepo authRepo = AuthRepo();
     String userID = await authRepo.getUserIDFromAttributes();
     final item = my_datastore.File(
@@ -208,13 +199,12 @@ class DataRepo {
     );
     await Amplify.DataStore.save(item);
 
-
     //Uploading video
     try {
-      final file = File(video!.files.first.path!);
+      // final file = File(video!.files.first.path!);
       final UploadFileResult result = await Amplify.Storage.uploadFile(
-        local: file,
-        key: item.s3key,
+        local: videoFile!,
+        key: item.s3key!,
         options: S3UploadFileOptions(
           accessLevel: StorageAccessLevel.guest,
         ),
@@ -224,12 +214,12 @@ class DataRepo {
       print('Error uploading file: $e');
     }
 
-    if (photo != null) {
+    if (photoFile != null) {
       //Upploading Photo
       try {
-        final file = File(photo.files.first.path!);
+        // final file = File(photo.files.first.path!);
         final UploadFileResult result = await Amplify.Storage.uploadFile(
-          local: file,
+          local: photoFile,
           key: item.picsS3key!,
           options: S3UploadFileOptions(
             accessLevel: StorageAccessLevel.guest,
@@ -247,14 +237,13 @@ class DataRepo {
 
   Future<List<my_datastore.File>> listFilesByCategory(String category) async {
     List<my_datastore.File> items = [];
-
     try {
-      items = await Amplify.DataStore.query(my_datastore.File.classType,
-          where: my_datastore.File.CATEGORY.eq(category));
+      items = await Amplify.DataStore.query(my_datastore.File.classType, where: my_datastore.File.CATEGORY.eq(category));
     } catch (e) {
       print("Could not query DataStore: " + e.toString());
     }
-
+    items;
+    print('DataRepo.listFilesByCategory: ${items.length}');
     return items;
   }
 
@@ -262,8 +251,7 @@ class DataRepo {
     List<my_datastore.File> items = [];
 
     try {
-      items = await Amplify.DataStore.query(my_datastore.File.classType,
-          where: my_datastore.File.GRADE.eq(grade));
+      items = await Amplify.DataStore.query(my_datastore.File.classType, where: my_datastore.File.GRADE.eq(grade));
     } catch (e) {
       print("Could not query DataStore: " + e.toString());
     }
@@ -273,10 +261,9 @@ class DataRepo {
 
   Future<List<my_datastore.File>> listFilesByName(String name) async {
     List<my_datastore.File> items = [];
-
+    print('DataRepo.listFilesByName ${my_datastore.File.classType}');
     try {
-      items = await Amplify.DataStore.query(my_datastore.File.classType,
-          where: my_datastore.File.NAME.eq(name));
+      items = await Amplify.DataStore.query(my_datastore.File.classType, where: my_datastore.File.NAME.eq(name));
     } catch (e) {
       print("Could not query DataStore: " + e.toString());
     }
@@ -288,8 +275,7 @@ class DataRepo {
     List<my_datastore.File> items = [];
 
     try {
-      items = await Amplify.DataStore.query(my_datastore.File.classType,
-          where: my_datastore.File.OWNERID.eq(ID));
+      items = await Amplify.DataStore.query(my_datastore.File.classType, where: my_datastore.File.OWNERID.eq(ID));
     } catch (e) {
       print("Could not query DataStore: " + e.toString());
     }
@@ -326,13 +312,12 @@ class DataRepo {
     List<String> categories = [];
 
     try {
-      List<my_datastore.File> items =
-          await Amplify.DataStore.query(my_datastore.File.classType);
+      List<my_datastore.File> items = await Amplify.DataStore.query(my_datastore.File.classType);
 
       for (int i = 0; i < items.length; i++) {
-        print('abc ' + items.toString() + items.elementAt(i).name);
+        print('abc ' + items.toString() + items.elementAt(i).name!);
         if (!categories.contains(items.elementAt(i).category)) {
-          categories.add(items.elementAt(i).category);
+          categories.add(items.elementAt(i).category!);
         }
       }
       return categories;
@@ -346,9 +331,7 @@ class DataRepo {
   Future<String> getVideoLink(my_datastore.File item) async {
     String str = "";
     try {
-      final GetUrlResult result = await Amplify.Storage.getUrl(
-          key: item.s3key,
-          options: S3GetUrlOptions(accessLevel: StorageAccessLevel.guest));
+      final GetUrlResult result = await Amplify.Storage.getUrl(key: item.s3key!, options: S3GetUrlOptions(accessLevel: StorageAccessLevel.guest));
 
       print('Got Video URL: ${result.url}');
 
@@ -364,8 +347,7 @@ class DataRepo {
     String str = "";
     if (item.picsS3key != null) {
       try {
-        final GetUrlResult result =
-            await Amplify.Storage.getUrl(key: item.picsS3key!);
+        final GetUrlResult result = await Amplify.Storage.getUrl(key: item.picsS3key!);
         print('Got PHOTO URL: ${result.url}');
 
         return result.url;
@@ -378,26 +360,23 @@ class DataRepo {
 
   Future<void> deleteFile(my_datastore.File item) async {
     try {
-      final RemoveResult result = await Amplify.Storage.remove(key: item.s3key);
+      final RemoveResult result = await Amplify.Storage.remove(key: item.s3key!);
       print('Deleted file: ${result.key}');
     } on StorageException catch (e) {
       print('Error deleting file: $e');
     }
 
-
-      try {
-        final RemoveResult result =
-            await Amplify.Storage.remove(key: item.picsS3key!);
-        print('Deleted file: ${result.key}');
-      } on StorageException catch (e) {
-        print('Error deleting file: $e');
-      }
-
+    try {
+      final RemoveResult result = await Amplify.Storage.remove(key: item.picsS3key!);
+      print('Deleted file: ${result.key}');
+    } on StorageException catch (e) {
+      print('Error deleting file: $e');
+    }
 
     await Amplify.DataStore.delete(item);
   }
 
-  Future<void> deleteCategory(String category,String id) async {
+  Future<void> deleteCategory(String category, String id) async {
     List<my_datastore.File> items = [];
 
     try {
@@ -413,16 +392,11 @@ class DataRepo {
     }
   }
 
-  Future<void> deleteEverything()
-  async {
+  Future<void> deleteEverything() async {
     List<my_datastore.File> items = await listAll();
 
-    for(int i=0;i<items.length;i++)
-      {
-        deleteFile(items[i]);
-      }
-
-
+    for (int i = 0; i < items.length; i++) {
+      deleteFile(items[i]);
+    }
   }
-
 }

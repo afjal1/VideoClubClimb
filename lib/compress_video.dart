@@ -1,10 +1,7 @@
-import 'package:file_picker/file_picker.dart';
+// import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:video_compress/video_compress.dart';
-import 'dart:io';
-
-
-
+import 'package:videoclubclimb/functions/native_functions.dart';
 
 class MyHomePage2 extends StatefulWidget {
   MyHomePage2({Key? key, this.title}) : super(key: key);
@@ -17,7 +14,7 @@ class MyHomePage2 extends StatefulWidget {
 
 class _MyHomePage2State extends State<MyHomePage2> {
   String _counter = "video";
-  int process=0;
+  int process = 0;
 
   _compressVideo() async {
     var file;
@@ -30,13 +27,12 @@ class _MyHomePage2State extends State<MyHomePage2> {
     //   file = File(pickedFile!.path);
     // }
 
+    // FilePickerResult? pickedFile = await FilePicker.platform.pickFiles(
+    //   type: FileType.video,
+    // );
+    // file=File(pickedFile!.files.first.path!);
 
-    FilePickerResult? pickedFile = await FilePicker.platform.pickFiles(
-      type: FileType.video,
-    );
-
-    file=File(pickedFile!.files.first.path!);
-
+    file = await mFilePicker(type: EFileType.video);
 
     if (file == null) {
       return;
@@ -53,7 +49,7 @@ class _MyHomePage2State extends State<MyHomePage2> {
     if (info != null) {
       setState(() {
         setState(() {
-          process=2;
+          process = 2;
         });
         _counter = info.path!;
       });
@@ -70,38 +66,29 @@ class _MyHomePage2State extends State<MyHomePage2> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
-            if(process==1)
-            const CircularProgressIndicator.adaptive(),
-
-            if(process==2)
-            Text(
-              'File Saved to:+ $_counter',
-            ),
-
+            if (process == 1) const CircularProgressIndicator.adaptive(),
+            if (process == 2)
+              Text(
+                'File Saved to:+ $_counter',
+              ),
             ElevatedButton(
               onPressed: () async {
-
                 setState(() {
-                  process=1;
+                  process = 1;
                 });
-                    _compressVideo();
-
+                _compressVideo();
               },
               child: const Text('UPLOAD VIDEO'),
             ),
-
             ElevatedButton(
               onPressed: () {
-            VideoCompress.cancelCompression();
-            setState(() {
-              process=0;
-            });
-            },
+                VideoCompress.cancelCompression();
+                setState(() {
+                  process = 0;
+                });
+              },
               child: const Text('CANCEL COMPRESSION'),
             ),
-
-
           ],
         ),
       ),

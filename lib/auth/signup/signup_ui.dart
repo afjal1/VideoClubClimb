@@ -38,7 +38,7 @@ class SignupPage extends StatelessWidget {
 
   Widget _signupForm() {
     return BlocListener<SignupBloc, SignupState>(
-      listener: (context, state) {
+      listener: (BuildContext context, state) {
         final formSubmissionState = state.formSubmissionState;
         if (formSubmissionState is FormSubmissionFailed) {
           _showSnackBar(context, formSubmissionState.exception.toString());
@@ -66,6 +66,7 @@ class SignupPage extends StatelessWidget {
   Widget _emailField() {
     return BlocBuilder<SignupBloc, SignupState>(
       builder: (BuildContext context, state) {
+        Size size = MediaQuery.of(context).size;
         return TextFormField(
           keyboardType: TextInputType.emailAddress,
           cursorColor: Colors.white,
@@ -80,11 +81,11 @@ class SignupPage extends StatelessWidget {
             labelText: 'Email',
             labelStyle: TextStyle(
                 color: Colors.white,
-                fontSize: 18
+                fontSize: size.width * 0.0513
             ),
             floatingLabelStyle: TextStyle(
                 color: Colors.blue,
-                fontSize: 18
+                fontSize: size.width * 0.0513
             ),
             floatingLabelBehavior: FloatingLabelBehavior.auto,
 
@@ -131,6 +132,8 @@ class SignupPage extends StatelessWidget {
   Widget _passwordField() {
     return BlocBuilder<SignupBloc, SignupState>(
       builder: (BuildContext context, state) {
+        Size size = MediaQuery.of(context).size;
+
         return TextFormField(
           obscureText: true,
           keyboardType: TextInputType.emailAddress, //tipo de teclado
@@ -143,11 +146,11 @@ class SignupPage extends StatelessWidget {
             labelText: 'Contraseña',
             labelStyle: TextStyle(
                 color: Colors.white,
-                fontSize: 18
+                fontSize: size.width * 0.0513
             ),
             floatingLabelStyle: TextStyle(
                 color: Colors.blue,
-                fontSize: 18
+                fontSize: size.width * 0.0513
             ),
             floatingLabelBehavior: FloatingLabelBehavior.auto,
 
@@ -207,7 +210,7 @@ class SignupPage extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             primary: Colors.teal,
             onPrimary: Colors.white,
-            elevation: 5,
+            elevation: MediaQuery.of(context).size.height* 0.0067,
           ),
           autofocus: true,
           child: const Text('Registrarse'),
@@ -222,11 +225,14 @@ class SignupPage extends StatelessWidget {
   }
 
   Widget _loginButton(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: TextButton(
-        child: const Text(
+        child: Text(
           '¿Ya tienes cuenta? Iniciar sesión',
-          style: TextStyle(color: Colors.white, fontSize: 17),
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: size.width * 0.04845),
         ),
         onPressed: () {
           context.read<AuthCubit>().showLogin();

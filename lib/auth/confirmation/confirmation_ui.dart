@@ -62,6 +62,8 @@ class ConfirmationPage extends StatelessWidget {
   Widget _codeField() {
     return BlocBuilder<ConfirmationBloc, ConfirmationState>(
       builder: (BuildContext context, state) {
+        Size size = MediaQuery.of(context).size;
+
         return TextFormField(
             keyboardType: TextInputType.number, //tipo de teclado
             cursorColor: Colors.white,
@@ -72,11 +74,11 @@ class ConfirmationPage extends StatelessWidget {
               labelText: 'Código de confirmación',
               labelStyle: TextStyle(
                   color: Colors.white,
-                  fontSize: 18
+                  fontSize: size.width * 0.0513,
               ),
               floatingLabelStyle: TextStyle(
                   color: Colors.blue,
-                  fontSize: 18
+                  fontSize: size.width * 0.0513,
               ),
               floatingLabelBehavior: FloatingLabelBehavior.auto,
 
@@ -128,6 +130,7 @@ class ConfirmationPage extends StatelessWidget {
   Widget _confirmButton() {
     return BlocBuilder<ConfirmationBloc, ConfirmationState>(builder: (context, state) {
       if (state.formSubmissionState is FormSubmitting) {
+
         return const CircularProgressIndicator(
           color: Colors.teal,
         );
@@ -136,7 +139,7 @@ class ConfirmationPage extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             primary: Colors.teal,
             onPrimary: Colors.white,
-            elevation: 5,
+            elevation: MediaQuery.of(context).size.height* 0.0417,
           ),
           autofocus: true,
           child: const Text('Confirmar cuenta'),

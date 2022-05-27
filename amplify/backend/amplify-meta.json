@@ -47,7 +47,7 @@
         "IdentityPoolName": "testAuthIdentityPool__staging",
         "UserPoolName": "flutter3"
       },
-      "lastPushTimeStamp": "2022-04-07T08:16:48.231Z",
+      "lastPushTimeStamp": "2022-04-09T17:19:48.321Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-flutter3-staging-153730-deployment/amplify-cfn-templates/auth/flutter3-cloudformation-template.json",
         "logicalId": "authflutter3"
@@ -63,7 +63,7 @@
         "BucketName": "flutter3-storage153730-staging",
         "Region": "us-east-1"
       },
-      "lastPushTimeStamp": "2022-04-07T08:16:49.035Z",
+      "lastPushTimeStamp": "2022-04-09T17:19:49.282Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-flutter3-staging-153730-deployment/amplify-cfn-templates/storage/cloudformation-template.json",
         "logicalId": "storages3flutter3storage"
@@ -99,11 +99,12 @@
         "GraphQLAPIEndpointOutput": "https://jaajfl2j7bbydfwebhmkivdc4i.appsync-api.us-east-1.amazonaws.com/graphql",
         "GraphQLAPIKeyOutput": "da2-mfjjxrmo5bewbhcoj4k2zdiani"
       },
-      "lastPushTimeStamp": "2022-04-07T08:16:48.246Z",
+      "lastPushTimeStamp": "2022-04-09T17:19:48.342Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-flutter3-staging-153730-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiflutter3"
-      }
+      },
+      "lastPushDirHash": "mWtrHZORKm5TngglpZC2E6RlMwE="
     }
   }
 }

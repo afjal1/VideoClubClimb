@@ -4,12 +4,19 @@ import 'dart:io';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+//import 'package:file_picker/file_picker.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:videoclubclimb/Pages/Upload/upload_video/upload_videos_event.dart';
 import 'package:videoclubclimb/Pages/Upload/upload_video/upload_videos_state.dart';
 import 'package:videoclubclimb/auth/form_submission_state.dart';
+
+import 'package:videoclubclimb/functions/native_functions.dart';
+
+
+
 
 import '../../../amplifyconfiguration.dart';
 import '../../../data_repo.dart';
@@ -17,11 +24,14 @@ import '../../../data_repo.dart';
 
 
 class UploadVideoBloc extends Bloc<UploadVideoEvent, UploadVideoState> {
-  FilePickerResult? _result;
+  //FilePickerResult? _result;
   DataRepo dataRepo;
   String category = "";
 
-  late FilePickerResult? _imageresult;
+  File? _videoFile;
+  File? _imageFile;
+
+  //late FilePickerResult? _imageresult;
 
   UploadVideoBloc({required this.dataRepo}) : super(UploadVideoState()) {
     on<FilePickerUploadVideoButtonClickedEvent>(_filePickerButtonClicked);
@@ -42,29 +52,41 @@ class UploadVideoBloc extends Bloc<UploadVideoEvent, UploadVideoState> {
     on<UploadVideoButtonClickedEvent>(_uploadFile);
   }
 
-  get image => null;
+  //get image => null;
 
   ///video
   FutureOr<void> _filePickerButtonClicked(
       FilePickerUploadVideoButtonClickedEvent event,
       Emitter<UploadVideoState> emit) async {
-    _result = await FilePicker.platform.pickFiles(
-      type: FileType.video,
-    );
-
-    print('video');
+    _videoFile = await mFilePicker(type: EFileType.video);
+    if (_videoFile != null) {
+      emit(state.copyWith(video: _videoFile!.path));
+    }
   }
 
   ///image
   FutureOr<void> _ImagefilePickerButtonClicked(
       ImageFilePickerUploadVideoButtonClickedEvent event,
       Emitter<UploadVideoState> emit) async {
-    _imageresult = await FilePicker.platform
-        .pickFiles(type: FileType.image, allowMultiple: false);
-    // onFileLoading: image,
+    _imageFile = await mFilePicker(type: EFileType.image);
 
-    if (_imageresult != null) {
-      emit(state.copyWith(image: _imageresult!.paths.first));
+    if (_imageFile != null) {
+       _imageFile = await ImageCropper().cropImage(sourcePath: _imageFile!.path,
+
+         aspectRatioPresets: [
+           CropAspectRatioPreset.square,
+         ],
+         androidUiSettings: const AndroidUiSettings(
+
+             cropFrameColor: Colors.orange,
+             activeControlsWidgetColor: Colors.orange,
+             toolbarTitle: 'Recortar',
+             toolbarColor: Colors.orange,
+             toolbarWidgetColor: Colors.white,
+             initAspectRatio: CropAspectRatioPreset.original,
+             lockAspectRatio: false),
+       );
+      emit(state.copyWith(image: _imageFile!.path));
     }
   }
 
@@ -75,7 +97,7 @@ class UploadVideoBloc extends Bloc<UploadVideoEvent, UploadVideoState> {
     emit(state.copyWith(formSubmissionState: FormSubmitting()));
 
     await dataRepo.datastoreUploadFile(event.fileName, category, event.desc,
-        event.grado, _result, _imageresult);
+        event.grado, _videoFile,_imageFile);
 
     emit(state.copyWith(formSubmissionState: FormSubmissionSuccessful()));
 
