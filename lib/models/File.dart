@@ -87,7 +87,18 @@ class File extends Model {
     return _updatedAt;
   }
 
-  const File._internal({required this.id, name, type, category, description, ownerID, grade, s3key, picsS3key, createdAt, updatedAt})
+  const File._internal(
+      {required this.id,
+      name,
+      type,
+      category,
+      description,
+      ownerID,
+      grade,
+      s3key,
+      picsS3key,
+      createdAt,
+      updatedAt})
       : _name = name,
         _type = type,
         _category = category,
@@ -101,14 +112,14 @@ class File extends Model {
 
   factory File(
       {String? id,
-        String? name,
-        FileType? type,
-        String? category,
-        String? description,
-        String? ownerID,
-        int? grade,
-        String? s3key,
-        String? picsS3key}) {
+      String? name,
+      FileType? type,
+      String? category,
+      String? description,
+      String? ownerID,
+      int? grade,
+      String? s3key,
+      String? picsS3key}) {
     return File._internal(
         id: id == null ? UUID.getUUID() : id,
         name: name,
@@ -150,15 +161,20 @@ class File extends Model {
     buffer.write("File {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("name=" + "$_name" + ", ");
-    buffer.write("type=" + (_type != null ? enumToString(_type)! : "null") + ", ");
+    buffer.write(
+        "type=" + (_type != null ? enumToString(_type)! : "null") + ", ");
     buffer.write("category=" + "$_category" + ", ");
     buffer.write("description=" + "$_description" + ", ");
     buffer.write("ownerID=" + "$_ownerID" + ", ");
-    buffer.write("grade=" + (_grade != null ? _grade!.toString() : "null") + ", ");
+    buffer.write(
+        "grade=" + (_grade != null ? _grade!.toString() : "null") + ", ");
     buffer.write("s3key=" + "$_s3key" + ", ");
     buffer.write("picsS3key=" + "$_picsS3key" + ", ");
-    buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
-    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
+    buffer.write("createdAt=" +
+        (_createdAt != null ? _createdAt!.format() : "null") +
+        ", ");
+    buffer.write(
+        "updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
 
     return buffer.toString();
@@ -166,14 +182,14 @@ class File extends Model {
 
   File copyWith(
       {String? id,
-        String? name,
-        FileType? type,
-        String? category,
-        String? description,
-        String? ownerID,
-        int? grade,
-        String? s3key,
-        String? picsS3key}) {
+      String? name,
+      FileType? type,
+      String? category,
+      String? description,
+      String? ownerID,
+      int? grade,
+      String? s3key,
+      String? picsS3key}) {
     return File._internal(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -196,22 +212,26 @@ class File extends Model {
         _grade = (json['grade'] as num?)?.toInt(),
         _s3key = json['s3key'],
         _picsS3key = json['picsS3key'],
-        _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
-        _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
+        _createdAt = json['createdAt'] != null
+            ? TemporalDateTime.fromString(json['createdAt'])
+            : null,
+        _updatedAt = json['updatedAt'] != null
+            ? TemporalDateTime.fromString(json['updatedAt'])
+            : null;
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': _name,
-    'type': enumToString(_type),
-    'category': _category,
-    'description': _description,
-    'ownerID': _ownerID,
-    'grade': _grade,
-    's3key': _s3key,
-    'picsS3key': _picsS3key,
-    'createdAt': _createdAt?.format(),
-    'updatedAt': _updatedAt?.format()
-  };
+        'id': id,
+        'name': _name,
+        'type': enumToString(_type),
+        'category': _category,
+        'description': _description,
+        'ownerID': _ownerID,
+        'grade': _grade,
+        's3key': _s3key,
+        'picsS3key': _picsS3key,
+        'createdAt': _createdAt?.format(),
+        'updatedAt': _updatedAt?.format()
+      };
 
   static final QueryField ID = QueryField(fieldName: "file.id");
   static final QueryField NAME = QueryField(fieldName: "name");
@@ -222,65 +242,119 @@ class File extends Model {
   static final QueryField GRADE = QueryField(fieldName: "grade");
   static final QueryField S3KEY = QueryField(fieldName: "s3key");
   static final QueryField PICSS3KEY = QueryField(fieldName: "picsS3key");
-  static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
+  static var schema =
+      Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "File";
     modelSchemaDefinition.pluralName = "Files";
 
     modelSchemaDefinition.authRules = [
-      AuthRule(
-          authStrategy: AuthStrategy.PUBLIC, operations: [ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ]),
-      AuthRule(
-          authStrategy: AuthStrategy.PRIVATE, operations: [ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ]),
+      AuthRule(authStrategy: AuthStrategy.PUBLIC, operations: [
+        ModelOperation.CREATE,
+        ModelOperation.UPDATE,
+        ModelOperation.DELETE,
+        ModelOperation.READ
+      ]),
+      AuthRule(authStrategy: AuthStrategy.PRIVATE, operations: [
+        ModelOperation.CREATE,
+        ModelOperation.UPDATE,
+        ModelOperation.DELETE,
+        ModelOperation.READ
+      ]),
       AuthRule(
           authStrategy: AuthStrategy.PUBLIC,
           provider: AuthRuleProvider.IAM,
-          operations: [ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ]),
+          operations: [
+            ModelOperation.CREATE,
+            ModelOperation.UPDATE,
+            ModelOperation.DELETE,
+            ModelOperation.READ
+          ]),
       AuthRule(
           authStrategy: AuthStrategy.PRIVATE,
           provider: AuthRuleProvider.IAM,
-          operations: [ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ]),
+          operations: [
+            ModelOperation.CREATE,
+            ModelOperation.UPDATE,
+            ModelOperation.DELETE,
+            ModelOperation.READ
+          ]),
       AuthRule(
           authStrategy: AuthStrategy.GROUPS,
           groupClaim: "cognito:groups",
           groups: ["delete"],
           provider: AuthRuleProvider.USERPOOLS,
-          operations: [ModelOperation.READ, ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE]),
+          operations: [
+            ModelOperation.READ,
+            ModelOperation.CREATE,
+            ModelOperation.UPDATE,
+            ModelOperation.DELETE
+          ]),
       AuthRule(
           authStrategy: AuthStrategy.OWNER,
           ownerField: "owner",
           identityClaim: "cognito:username",
           provider: AuthRuleProvider.USERPOOLS,
-          operations: [ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ])
+          operations: [
+            ModelOperation.CREATE,
+            ModelOperation.UPDATE,
+            ModelOperation.DELETE,
+            ModelOperation.READ
+          ])
     ];
 
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
 
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(key: File.NAME, isRequired: false, ofType: ModelFieldType(ModelFieldTypeEnum.string)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        key: File.NAME,
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)));
 
-    modelSchemaDefinition
-        .addField(ModelFieldDefinition.field(key: File.TYPE, isRequired: false, ofType: ModelFieldType(ModelFieldTypeEnum.enumeration)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        key: File.TYPE,
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.enumeration)));
 
-    modelSchemaDefinition
-        .addField(ModelFieldDefinition.field(key: File.CATEGORY, isRequired: false, ofType: ModelFieldType(ModelFieldTypeEnum.string)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        key: File.CATEGORY,
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)));
 
-    modelSchemaDefinition
-        .addField(ModelFieldDefinition.field(key: File.DESCRIPTION, isRequired: false, ofType: ModelFieldType(ModelFieldTypeEnum.string)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        key: File.DESCRIPTION,
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)));
 
-    modelSchemaDefinition
-        .addField(ModelFieldDefinition.field(key: File.OWNERID, isRequired: false, ofType: ModelFieldType(ModelFieldTypeEnum.string)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        key: File.OWNERID,
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)));
 
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(key: File.GRADE, isRequired: false, ofType: ModelFieldType(ModelFieldTypeEnum.int)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        key: File.GRADE,
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.int)));
 
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(key: File.S3KEY, isRequired: false, ofType: ModelFieldType(ModelFieldTypeEnum.string)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        key: File.S3KEY,
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)));
 
-    modelSchemaDefinition
-        .addField(ModelFieldDefinition.field(key: File.PICSS3KEY, isRequired: false, ofType: ModelFieldType(ModelFieldTypeEnum.string)));
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        key: File.PICSS3KEY,
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)));
 
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
-        fieldName: 'createdAt', isRequired: false, isReadOnly: true, ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)));
+        fieldName: 'createdAt',
+        isRequired: false,
+        isReadOnly: true,
+        ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)));
 
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
-        fieldName: 'updatedAt', isRequired: false, isReadOnly: true, ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)));
+        fieldName: 'updatedAt',
+        isRequired: false,
+        isReadOnly: true,
+        ofType: ModelFieldType(ModelFieldTypeEnum.dateTime)));
   });
 }
 

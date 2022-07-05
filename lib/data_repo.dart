@@ -399,4 +399,20 @@ class DataRepo {
       deleteFile(items[i]);
     }
   }
+
+  Future<void> deleteAllCategory(String category) async {
+    List<my_datastore.File> items = [];
+
+    try {
+      items = await Amplify.DataStore.query(my_datastore.File.classType,
+          where: my_datastore.File.CATEGORY.eq(category).and(my_datastore.File.CATEGORY.eq(category)));
+
+      for (int i = 0; i < items.length; i++) {
+        await deleteFile(items.elementAt(i));
+        print("Deleted :" + items.elementAt(i).toString());
+      }
+    } catch (e) {
+      print("Could not query DataStore: " + e.toString());
+    }
+  }
 }

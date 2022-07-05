@@ -58,8 +58,8 @@ class _ZoneMenuState extends State<ZoneMenu> {
                 color: Colors.red,
                 size: MediaQuery.of(context).size.height*	0.0538,
               ),
-              onPressed: () async {
-                context.read<ZoneMenuBloc>().add(DeleteEverything());
+              onPressed: ()  {
+                showCustomDialog(context);
               },
             ),
             SizedBox(
@@ -177,4 +177,155 @@ class _ZoneMenuState extends State<ZoneMenu> {
       ),
     );
   }
+  void showCustomDialog(BuildContext context) {
+    showGeneralDialog(
+
+      context: context,
+      barrierLabel: "Barrier",
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
+
+      transitionDuration: const Duration(milliseconds: 700),
+      pageBuilder: (_, __, ___) {
+        Size size = MediaQuery.of(context).size;
+
+        return Center(
+          child: Container(
+            height: MediaQuery.of(context).size.height* 0.366,
+            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width* 0.0556),
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                  color: Colors.orange,
+                  width: MediaQuery.of(context).size.width* 0.03362
+              ),
+            ),
+
+            child: Scaffold(
+
+              body: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height* 0.0336,
+                        horizontal: MediaQuery.of(context).size.width* 0.0278),
+                    child: Text(
+                      "Seguro que quieres borrar TODOS LOS VIDEOS de la base?",
+                      style: TextStyle(
+                          fontSize: size.width * 0.0798,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orangeAccent),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+
+                  Container(
+                    margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height* 0.0134),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () async {
+                            context.read<ZoneMenuBloc>().add(DeleteEverything());
+                            Navigator.of(context, rootNavigator: true).pop(true);
+                            context.read<VideosCubit>().showZoneMenu();
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width* 0.2083,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.pink.withOpacity(0.5),
+                                    spreadRadius: 4,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 3),
+                                  )
+                                ],
+                                color: Colors.red,
+                                border: Border.all(
+                                  color: const Color(0x60FF0000),
+                                ),
+                                borderRadius: BorderRadius.circular(5)
+                            ),
+
+                            child:  Center(
+                                child: Text(
+                                  "SI",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: size.width * 0.0855),
+                                )),
+                          ),
+                        ),
+
+                        SizedBox(width: MediaQuery.of(context).size.width* 0.0861,),
+
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop(true);
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width* 0.2778,
+                            height: MediaQuery.of(context).size.height* 0.1009,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.green.withOpacity(0.5),
+                                  spreadRadius: 4,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 3),
+                                )
+                              ],
+                              color:  Colors.green,
+                              border: Border.all(
+                                color: const Color(0x60177103),
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+
+                            child: Center(
+                                child: Text(
+                                  "NO",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: size.width * 0.0855),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (_, anim, __, child) {
+        Tween<Offset> tween;
+        if (anim.status == AnimationStatus.reverse) {
+          tween = Tween(begin: Offset(-1, 0), end: Offset.zero);
+        } else {
+          tween = Tween(begin: Offset(1, 0), end: Offset.zero);
+        }
+
+        return SlideTransition(
+          position: tween.animate(anim),
+          child: FadeTransition(
+            opacity: anim,
+            child: child,
+          ),
+        );
+      },
+    );
+  }
+
 }

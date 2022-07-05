@@ -44,21 +44,25 @@ class SignupPage extends StatelessWidget {
           _showSnackBar(context, formSubmissionState.exception.toString());
         }
       },
-      child: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _emailField(),
-              SizedBox(height: 30,),
-              _passwordField(),
-              const SizedBox(height: 50),
-              _signupButton(),
-            ],
-          ),
-        ),
+      child: Builder(
+        builder: (context) {
+          return Form(
+            key: _formKey,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width* 0.0538),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _emailField(),
+                  SizedBox(height: MediaQuery.of(context).size.height* 0.0403,),
+                  _passwordField(),
+                  SizedBox(height: MediaQuery.of(context).size.height* 0.0672),
+                  _signupButton(),
+                ],
+              ),
+            ),
+          );
+        }
       ),
     );
   }
@@ -227,16 +231,19 @@ class SignupPage extends StatelessWidget {
   Widget _loginButton(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return SafeArea(
-      child: TextButton(
-        child: Text(
-          '¿Ya tienes cuenta? Iniciar sesión',
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: size.width * 0.04845),
+      child: Container(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height* 0.0134),
+        child: TextButton(
+          child: Text(
+            '¿Ya tienes cuenta? Iniciar sesión',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: size.width * 0.05415),
+          ),
+          onPressed: () {
+            context.read<AuthCubit>().showLogin();
+          },
         ),
-        onPressed: () {
-          context.read<AuthCubit>().showLogin();
-        },
       ),
     );
   }

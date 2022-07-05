@@ -279,7 +279,7 @@ class _MyVideosUIState extends State<MyVideosUI> {
               ),
               IconButton(
                 onPressed: () {
-                  showCustomDialog(context);
+                  showCustomDialogAll(context);
                 },
                 splashColor: Colors.redAccent,
                 icon:  Icon(
@@ -305,7 +305,7 @@ class _MyVideosUIState extends State<MyVideosUI> {
           BlocBuilder<MyVideosBloc, MyVideosState>(
             builder: (BuildContext context, state) {
               if(context.watch<MyVideosBloc>().state.items.isEmpty) {
-                return const Center(child: Text("No Content Here"));
+                return const Center(child: Text("No hay contenido"));
               }
 
               return context.watch<MyVideosBloc>().state.items.first.type==FileType.PHOTOS
@@ -359,6 +359,7 @@ class _MyVideosUIState extends State<MyVideosUI> {
 
                                        CircleAvatar(
                                          backgroundColor: Colors.transparent,
+
                                          child: ClipRRect(
                                             child: Image.network(
                                               context
@@ -376,9 +377,9 @@ class _MyVideosUIState extends State<MyVideosUI> {
                                                           color:
                                                               Colors.transparent)),
                                             ),
-                                      borderRadius: BorderRadius.circular(15),
+                                           borderRadius: BorderRadius.circular(15),
                                           ),
-                                         maxRadius: 30,
+
                                        ),
 
                                         SizedBox(
@@ -433,9 +434,14 @@ class _MyVideosUIState extends State<MyVideosUI> {
                                             size: MediaQuery.of(context).size.height*	0.0403,
                                           ),
                                           onPressed: () {
-                                            context.read<MyVideosBloc>().add(
-                                                DeleteVideoButtonClickedEvent(
-                                                    index: index));
+
+                                            showCustomDialogOne(context, index);
+                                            // context.read<MyVideosBloc>().add(DeleteVideoButtonClickedEvent(index: index));
+                                            // Future.delayed(const Duration(milliseconds: 1000), () {
+                                            //   setState(() {
+                                            //     context.read<MyVideosBloc>().add(LoadMyVideosEvent());
+                                            //   });
+                                            // });
                                           },
                                         ),
 
@@ -459,63 +465,127 @@ class _MyVideosUIState extends State<MyVideosUI> {
     );
   }
 
-  void showCustomDialog(BuildContext context) {
+  void showCustomDialogAll(BuildContext context) {
     showGeneralDialog(
+
       context: context,
       barrierLabel: "Barrier",
       barrierDismissible: true,
       barrierColor: Colors.black.withOpacity(0.5),
+
       transitionDuration: const Duration(milliseconds: 700),
       pageBuilder: (_, __, ___) {
+        Size size = MediaQuery.of(context).size;
+
         return Center(
           child: Container(
-            height: 340,
+            height: MediaQuery.of(context).size.height* 0.43,
+            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width* 0.0556),
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                  color: Colors.orange,
+                  width: MediaQuery.of(context).size.width* 0.03362
+              ),
+            ),
+
             child: Scaffold(
+
               body: Column(
                 children: [
-                  const SizedBox(
-                    height: 30,
-                  ),
                   Container(
-                    margin: const EdgeInsets.all(10),
-                    child: const Text(
-                      "Do you want to Delete everything in this Sector?",
+                    margin: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height* 0.0336,
+                        horizontal: MediaQuery.of(context).size.width* 0.0278),
+                    child: Text(
+                      "Seguro que quieres borrar todos tus videos de este sector?",
                       style: TextStyle(
-                          fontSize: 20,
+                          fontSize: size.width * 0.0798,
                           fontWeight: FontWeight.bold,
                           color: Colors.orangeAccent),
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const Expanded(child: SizedBox()),
+
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height* 0.0134),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Expanded(
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                            ),
-                            onPressed: () {
-                              context
-                                  .read<MyVideosBloc>()
-                                  .add(DeleteEverythingEvent());
-                            },
-                            child: Container(
-                              child: const Center(
-                                  child: Text(
-                                "YES",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 30),
-                              )),
-                              decoration: BoxDecoration(
-                                color: const Color(0x60FF0000),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {
+                            context.read<MyVideosBloc>().add(DeleteEverythingEvent());
+                            Navigator.of(context, rootNavigator: true).pop(true);
+                            context.read<VideosCubit>().showMyVideosMenu();
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width* 0.2083,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.pink.withOpacity(0.5),
+                                    spreadRadius: 4,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 3),
+                                  )
+                                ],
+                                color: Colors.red,
                                 border: Border.all(
                                   color: const Color(0x60FF0000),
                                 ),
-                              ),
+                                borderRadius: BorderRadius.circular(5)
                             ),
+
+                            child:  Center(
+                                child: Text(
+                                  "SI",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: size.width * 0.0855),
+                                )),
+                          ),
+                        ),
+
+                        SizedBox(width: MediaQuery.of(context).size.width* 0.0861,),
+
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop(true);
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width* 0.2778,
+                            height: MediaQuery.of(context).size.height* 0.1009,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.green.withOpacity(0.5),
+                                  spreadRadius: 4,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 3),
+                                )
+                              ],
+                              color:  Colors.green,
+                              border: Border.all(
+                                color: const Color(0x60177103),
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+
+                            child: Center(
+                                child: Text(
+                                  "NO",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: size.width * 0.0855),
+                                )),
                           ),
                         ),
                       ],
@@ -524,9 +594,6 @@ class _MyVideosUIState extends State<MyVideosUI> {
                 ],
               ),
             ),
-            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*	0.0556),
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(40)),
           ),
         );
       },
@@ -548,4 +615,164 @@ class _MyVideosUIState extends State<MyVideosUI> {
       },
     );
   }
+
+  void showCustomDialogOne(BuildContext context, index) {
+
+    showGeneralDialog(
+
+      context: context,
+      barrierLabel: "Barrier",
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
+
+      transitionDuration: const Duration(milliseconds: 700),
+      pageBuilder: (_, __, ___) {
+        Size size = MediaQuery.of(context).size;
+
+        return Center(
+          child: Container(
+            height: MediaQuery.of(context).size.height* 0.43,
+            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width* 0.0556),
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                  color: Colors.orange,
+                  width: MediaQuery.of(context).size.width* 0.03362
+              ),
+            ),
+
+            child: Scaffold(
+
+              body: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height* 0.0336,
+                        horizontal: MediaQuery.of(context).size.width* 0.0278),
+                    child: Text(
+                      "Seguro que quieres borrar este video?",
+                      style: TextStyle(
+                          fontSize: size.width * 0.0798,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orangeAccent),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+
+                  Container(
+                    margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height* 0.0134),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {
+
+                            context.read<MyVideosBloc>().add(DeleteVideoButtonClickedEvent(index: index));
+                            Future.delayed(const Duration(milliseconds: 1000), () {
+                              setState(() {
+                                context.read<MyVideosBloc>().add(LoadMyVideosEvent());
+                              });
+                            });
+                            Navigator.of(context, rootNavigator: true).pop(true);
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width* 0.2083,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.pink.withOpacity(0.5),
+                                    spreadRadius: 4,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 3),
+                                  )
+                                ],
+                                color: Colors.red,
+                                border: Border.all(
+                                  color: const Color(0x60FF0000),
+                                ),
+                                borderRadius: BorderRadius.circular(5)
+                            ),
+
+                            child:  Center(
+                                child: Text(
+                                  "SI",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: size.width * 0.0855),
+                                )),
+                          ),
+                        ),
+
+                        SizedBox(width: MediaQuery.of(context).size.width* 0.0861,),
+
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop(true);
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width* 0.2778,
+                            height: MediaQuery.of(context).size.height* 0.1009,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.green.withOpacity(0.5),
+                                  spreadRadius: 4,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 3),
+                                )
+                              ],
+                              color:  Colors.green,
+                              border: Border.all(
+                                color: const Color(0x60177103),
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+
+                            child: Center(
+                                child: Text(
+                                  "NO",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: size.width * 0.0855),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (_, anim, __, child) {
+        Tween<Offset> tween;
+        if (anim.status == AnimationStatus.reverse) {
+          tween = Tween(begin: Offset(-1, 0), end: Offset.zero);
+        } else {
+          tween = Tween(begin: Offset(1, 0), end: Offset.zero);
+        }
+
+        return SlideTransition(
+          position: tween.animate(anim),
+          child: FadeTransition(
+            opacity: anim,
+            child: child,
+          ),
+        );
+      },
+    );
+  }
+
+
+
 }

@@ -46,8 +46,6 @@ class _WatchVideoState extends State<WatchVideo> {
           );
         });
 
-    Size size = MediaQuery.of(context).size;
-
     return Scaffold(
         appBar:
             AppBar(title: Text(context.read<WatchVideosBloc>().state.UIName)),

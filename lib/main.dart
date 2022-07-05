@@ -41,7 +41,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   bool _isAmplifyConfigured = false;
 
 
@@ -53,11 +52,9 @@ class _MyAppState extends State<MyApp> {
   }
 
 
+  DateTime timeBackPressed = DateTime.now();
   @override
   Widget build(BuildContext context) {
-
-
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
@@ -75,10 +72,55 @@ class _MyAppState extends State<MyApp> {
       home: _isAmplifyConfigured
           ? RepositoryProvider(
         create: (context) => AuthRepo(),
-        child: BlocProvider(
-          create: (BuildContext context) =>
-              SessionCubit(authRepo: context.read<AuthRepo>()),
-          child: const AppNavigator(),
+        child: Builder(
+          builder: (context) {
+            return WillPopScope(
+              onWillPop: () async{
+                final difference = DateTime.now().difference(timeBackPressed);
+                final isExitWarning = difference >=Duration(seconds: 2);
+
+                timeBackPressed = DateTime.now();
+                Size size = MediaQuery.of(context).size;
+
+                if (isExitWarning) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(35),side: BorderSide(
+                        width: MediaQuery.of(context).size.width* 0.0056,
+                        color: Colors.orange
+                    )),
+                    duration: Duration (seconds: 2),
+                    content: Container(
+                        child: Center(
+                            heightFactor: 1,
+                            widthFactor: 1,
+                            child: Text("Pulsa de nuevo para salir",style: TextStyle(
+                              // fontWeight: FontWeight.bold,
+                                fontSize: size.width * 0.047
+                            ),))),
+                    margin: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width* 0.1111,
+                        vertical: MediaQuery.of(context).size.height* 0.1),
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: Colors.orangeAccent,
+                    elevation: MediaQuery.of(context).size.height* 0.0134,
+
+                  ));
+
+                  return false;
+                } else {
+                  return true;
+                }
+
+              },
+              child: BlocProvider(
+                create: (BuildContext context) =>
+                    SessionCubit(authRepo: context.read<AuthRepo>()),
+                child: const AppNavigator(),
+              ),
+            );
+          }
         ),
       )
           : const LoadingView(),

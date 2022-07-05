@@ -31,8 +31,9 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
     on<SearchByEvent>(_searchByChanged);
 
     on<GetVideoFiles>(_getVideoFiles);
+    on<DeleteAllCategoryVideo>(_deleteAllCategory);
 
-    ///no hace nada
+
   }
 
   FutureOr<void> _onDeleteVideoButtonClickedEvent(
@@ -154,7 +155,7 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
     emit(state.copyWith(searchBy: event.searchBy));
   }
 
-  ///no hace nada
+
   FutureOr<void> _getVideoFiles(GetVideoFiles event, Emitter<ZoneVideosState> emit) async {
     try {
       emit(state.copyWith(formSubmissionState: FormSubmitting()));
@@ -181,6 +182,16 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
       print('ZoneVideosBloc._getVideoFiles: $e');
     }
   }
+
+  Future<void> _deleteAllCategory(DeleteAllCategoryVideo event, Emitter<ZoneVideosState> emit)
+  async{
+    print("Deleting");
+    // String id=await authRepo.getUserIDFromAttributes();
+    print("Deleting");
+    await dataRepo.deleteAllCategory(category);
+
+  }
+
 }
 
 int mapGradeToIndex(String? newValue) {

@@ -5,11 +5,11 @@ class LoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
         child: Image(
-          height: 150,
-          width: 150,
+          height: MediaQuery.of(context).size.height* 0.2017,
+          width: MediaQuery.of(context).size.width* 0.4167,
           image: AssetImage ('assets/gifgravetat.gif'),),
         // CircularProgressIndicator(
         //   color: Colors.orangeAccent,

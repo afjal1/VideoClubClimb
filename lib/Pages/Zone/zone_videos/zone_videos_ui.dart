@@ -1,3 +1,6 @@
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +20,6 @@ class ZoneVideo extends StatefulWidget {
 
 class _ZoneVideoState extends State<ZoneVideo> {
   TextEditingController searchController = TextEditingController();
-
   String searchByValue = 'Name';
   String gradoValue = '4';
 
@@ -29,6 +31,8 @@ class _ZoneVideoState extends State<ZoneVideo> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Container(
       decoration: const BoxDecoration(image: DecorationImage(image: AssetImage('assets/bgdibujos.jpg'), fit: BoxFit.cover)),
       child: Scaffold(
@@ -38,9 +42,9 @@ class _ZoneVideoState extends State<ZoneVideo> {
           iconTheme: const IconThemeData(color: Colors.white),
 
           leading: IconButton(
-            icon: const Icon(
+            icon:  Icon(
               Icons.arrow_back_ios_rounded,
-              size: 31,
+              size: MediaQuery.of(context).size.height*	0.0417,
             ),
             onPressed: () {
               context.read<VideosCubit>().showZoneMenu();
@@ -61,17 +65,23 @@ class _ZoneVideoState extends State<ZoneVideo> {
                   if (context.watch<ZoneVideosBloc>().state.searchBy == SearchBy.name)
                     Expanded(
                       child: Container(
-                        padding: const EdgeInsets.only(left: 100, bottom: 10, right: 20),
+                        padding:  EdgeInsets.only(
+                            left: 100,
+                            bottom: MediaQuery.of(context).size.width*	0.2778,
+                            right: MediaQuery.of(context).size.width*	0.0556,),
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
                         child: TextFormField(
                           decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.only(top: 20, left: 5),
+                            contentPadding:  EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height*	0.0269,
+                                left: MediaQuery.of(context).size.width*	0.0139,),
                             hintText: 'Search',
                             suffixIcon: IconButton(
-                              icon: const Padding(
-                                padding: EdgeInsets.only(top: 10.0),
+                              icon: Padding(
+                                padding: EdgeInsets.only(
+                                    top: MediaQuery.of(context).size.height*	0.0134,),
                                 child: Icon(Icons.search),
                               ),
                               onPressed: () {
@@ -106,10 +116,11 @@ class _ZoneVideoState extends State<ZoneVideo> {
                               );
                             }).toList(),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: MediaQuery.of(context).size.height*	0.0134,),
                           IconButton(
-                            icon: const Padding(
-                              padding: EdgeInsets.only(top: 10.0),
+                            icon: Padding(
+                              padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height*	0.0134,),
                               child: Icon(Icons.search),
                             ),
                             onPressed: () {
@@ -150,13 +161,32 @@ class _ZoneVideoState extends State<ZoneVideo> {
             ),
           ],
 
-          title: Text(
-            context.read<ZoneVideosBloc>().category,
-            style: const TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+          title: Row(
+            children: [
+              Text(
+                context.read<ZoneVideosBloc>().category,
+                style: TextStyle(
+                    fontSize: size.width * 0.07125,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
+
+              IconButton(
+                onPressed: () {
+                  showCustomDialog(context);
+                },
+                splashColor: Colors.redAccent,
+                icon:  Icon(
+                  Icons.delete,
+                  size: MediaQuery.of(context).size.height*	0.0403,
+                  color: Colors.red,
+                ),
+              ),
+            ],
           ),
           centerTitle: true,
-          elevation: 5,
-          toolbarHeight: 70,
+          elevation: MediaQuery.of(context).size.height*	0.0067,
+          toolbarHeight: MediaQuery.of(context).size.height*	0.0941,
           //Tamaño de la toolbar
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -166,61 +196,72 @@ class _ZoneVideoState extends State<ZoneVideo> {
         ),
         body: BlocBuilder<ZoneVideosBloc, ZoneVideosState>(
           builder: (BuildContext context, state) {
+
+            if(context.watch<ZoneVideosBloc>().state.files.isEmpty) {
+              return const Center(child: Text("No Content Here"));
+            }
+
             return context.watch<ZoneVideosBloc>().state.formSubmissionState is FormSubmitting
-                ? const Center(
+                || context.watch<ZoneVideosBloc>().state.videoUrls.isEmpty               ? const Center(
               child: CircularProgressIndicator(
                 color: Colors.teal,
               ),
             )
                 : ListView.builder(
               shrinkWrap: true,
-              padding: const EdgeInsets.only(top: 20),
-              itemCount: !context.watch<ZoneVideosBloc>().state.isSearching ? state.totalFiles : state.searchVideoUrls.length,
+              padding:  EdgeInsets.only(top: MediaQuery.of(context).size.height* 0.0269),
+              itemCount:context.watch<ZoneVideosBloc>().state.isSearching?
+              context.watch<ZoneVideosBloc>().state.searchedVideos.length:
+              context.watch<ZoneVideosBloc>().state.files.length
+              ,
               // TODO -- total categories in state
               itemBuilder: (context, index) {
                 return Center(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height* 0.0067),
                     child: Column(
                       children: [
-                        InkWell(
-                          splashColor: Colors.orange,
-                          onTap: () {
-                            if (context.read<ZoneVideosBloc>().state.isSearching) {
-                              context.read<VideosCubit>().watchVideo(
-                                category: context.read<ZoneVideosBloc>().state.searchedVideos.elementAt(index).category!,
-                                name: context.read<ZoneVideosBloc>().state.searchedVideos.elementAt(index).name!,
-                                UIName: context.read<ZoneVideosBloc>().state.searchedVideos.elementAt(index).name!,
-                                url: context.read<ZoneVideosBloc>().state.searchVideoUrls.elementAt(index),
-                              );
-                            } else {
-                              context.read<VideosCubit>().watchVideo(
-                                category: context.read<ZoneVideosBloc>().state.files.elementAt(index).category!,
-                                name: context.read<ZoneVideosBloc>().state.files.elementAt(index).name!,
-                                UIName: context.read<ZoneVideosBloc>().state.files.elementAt(index).name!,
-                                url: context.read<ZoneVideosBloc>().state.videoUrls.elementAt(index),
-                              );
-                            }
-                          },
+                        InkWell(splashColor: Colors.orange, onTap: () {
+                          if (context.read<ZoneVideosBloc>().state.isSearching)
+                          {context.read<VideosCubit>().watchVideo(category: context.read<ZoneVideosBloc>().state.searchedVideos.elementAt(index).category!,
+                            name: context.read<ZoneVideosBloc>().state.searchedVideos.elementAt(index).name!,
+                            UIName: context.read<ZoneVideosBloc>().state.searchedVideos.elementAt(index).name!,
+                            url: context.read<ZoneVideosBloc>().state.searchVideoUrls.elementAt(index),
+                          );
+                          } else {
+                            context.read<VideosCubit>().watchVideo(
+                              category: context.read<ZoneVideosBloc>().state.files.elementAt(index).category!,
+                              name: context.read<ZoneVideosBloc>().state.files.elementAt(index).name!,
+                              UIName: context.read<ZoneVideosBloc>().state.files.elementAt(index).name!,
+                              url: context.read<ZoneVideosBloc>().state.videoUrls.elementAt(index),
+                            );
+                          }
+                        },
                           child: Card(
-                            elevation: 10,
+                            elevation: MediaQuery.of(context).size.height* 0.0134,
                             color: Colors.orange.shade50,
-                            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                            margin: EdgeInsets.symmetric(
+                                vertical: MediaQuery.of(context).size.height* 0.0067,
+                                horizontal: MediaQuery.of(context).size.width* 0.0556),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                               // if you need this
-                              side: const BorderSide(
+                              side: BorderSide(
                                 color: Colors.orange,
-                                width: 2,
+                                width: MediaQuery.of(context).size.width* 0.0056,
                               ),
                             ),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
-                                  margin: EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 10),
-                                  height: 85,
-                                  width: 85,
+                                  margin: EdgeInsets.only(
+                                      left: MediaQuery.of(context).size.width* 0.0278,
+                                      top: MediaQuery.of(context).size.height* 0.0067,
+                                      bottom: MediaQuery.of(context).size.height* 0.0067,
+                                      right: MediaQuery.of(context).size.width* 0.0278,),
+                                  height: MediaQuery.of(context).size.height* 0.1143,
+                                  width: MediaQuery.of(context).size.width* 0.2361,
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(45),
                                     child: Image.network(
@@ -235,7 +276,8 @@ class _ZoneVideoState extends State<ZoneVideo> {
                                         return Center(
                                           child: CircularProgressIndicator(
                                             value: loadingProgress.expectedTotalBytes != null
-                                                ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                                                ? loadingProgress.cumulativeBytesLoaded
+                                                / loadingProgress.expectedTotalBytes!
                                                 : null,
                                           ),
                                         );
@@ -247,13 +289,14 @@ class _ZoneVideoState extends State<ZoneVideo> {
 
                                 ///imagen
                                 Container(
-                                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: MediaQuery.of(context).size.width* 0.0278),
                                   child: Column(
                                     // mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       SizedBox(
-                                        height: 4,
+                                        height: MediaQuery.of(context).size.height* 0.0054,
                                       ),
 
                                       Container(
@@ -261,23 +304,23 @@ class _ZoneVideoState extends State<ZoneVideo> {
                                           !context.watch<ZoneVideosBloc>().state.isSearching
                                               ? context.read<ZoneVideosBloc>().state.files[index].name!
                                               : context.read<ZoneVideosBloc>().state.searchedVideos[index].name!,
-                                          style: const TextStyle(
-                                            fontSize: 15,
+                                          style:  TextStyle(
+                                            fontSize: size.width * 0.04275,
                                             fontWeight: FontWeight.bold,
                                           ),
                                           textAlign: TextAlign.start,
                                         ),
-                                        width: 100,
+                                        width: MediaQuery.of(context).size.width* 0.2778,
                                       ),
 
                                       ///nombre
 
                                       SizedBox(
-                                        height: 7,
+                                        height: MediaQuery.of(context).size.height* 0.0094,
                                       ),
 
                                       Container(
-                                        width: 100,
+                                        width: MediaQuery.of(context).size.width* 0.2778,
                                         child: Text(
                                           !context.watch<ZoneVideosBloc>().state.isSearching
                                               ? context.read<ZoneVideosBloc>().state.files[index].description!
@@ -289,7 +332,7 @@ class _ZoneVideoState extends State<ZoneVideo> {
                                       ///desceripcion
 
                                       SizedBox(
-                                        height: 4,
+                                        height: MediaQuery.of(context).size.height* 0.0054,
                                       ),
                                     ],
                                   ),
@@ -297,14 +340,15 @@ class _ZoneVideoState extends State<ZoneVideo> {
                                 Expanded(child: SizedBox()),
 
                                 Container(
-                                  margin: EdgeInsets.only(right: 25),
+                                  margin: EdgeInsets.only(right: MediaQuery.of(context).size.width* 0.0694),
                                   child: Column(
                                     children: [
                                       Stack(
+                                        alignment: Alignment.center,
                                         children: [
                                           Container(
-                                            height: 35,
-                                            width: 35,
+                                            height: MediaQuery.of(context).size.height* 0.0471,
+                                            width: MediaQuery.of(context).size.width* 0.0972,
                                             decoration: BoxDecoration(
                                                 shape: BoxShape.rectangle,
                                                 boxShadow: [
@@ -323,24 +367,24 @@ class _ZoneVideoState extends State<ZoneVideo> {
                                                 // ],
                                                 color: getColorFromGrade(context.read<ZoneVideosBloc>().state.files[index].grade!),
                                                 borderRadius: BorderRadius.circular(10),
-                                                border: Border.all(width: 1, color: Colors.orange)),
+                                                border: Border.all(
+                                                    width: MediaQuery.of(context).size.width* 0.0028,
+                                                    color: Colors.orange)),
                                           ),
-                                          Text(
-                                            !context.watch<ZoneVideosBloc>().state.isSearching
-                                                ? getTextFromGrade(context.read<ZoneVideosBloc>().state.files[index].grade!)
-                                                : getTextFromGrade(context.read<ZoneVideosBloc>().state.searchedVideos[index].grade!),
+                                          Text(!context.watch<ZoneVideosBloc>().state.isSearching
+                                              ? getTextFromGrade(context.read<ZoneVideosBloc>().state.files[index].grade!)
+                                              : getTextFromGrade(context.read<ZoneVideosBloc>().state.searchedVideos[index].grade!),
                                             style: const TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                         ],
-                                        alignment: Alignment.center,
+
                                       )
                                     ],
                                   ),
                                 ),
-
                                 ///Grado
                               ],
                             ),
@@ -355,6 +399,157 @@ class _ZoneVideoState extends State<ZoneVideo> {
           },
         ),
       ),
+    );
+  }
+
+  void showCustomDialog(BuildContext context) {
+    showGeneralDialog(
+
+      context: context,
+      barrierLabel: "Barrier",
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
+
+      transitionDuration: const Duration(milliseconds: 700),
+      pageBuilder: (_, __, ___) {
+        Size size = MediaQuery.of(context).size;
+
+        return Center(
+          child: Container(
+            height: MediaQuery.of(context).size.height* 0.43,
+            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width* 0.0556),
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                  color: Colors.orange,
+                  width: MediaQuery.of(context).size.width* 0.03362
+              ),
+            ),
+
+            child: Scaffold(
+
+              body: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height* 0.0336,
+                        horizontal: MediaQuery.of(context).size.width* 0.0278),
+                    child: Text(
+                      "Seguro que quieres borrar TODOS los videos de este sector?",
+                      style: TextStyle(
+                          fontSize: size.width * 0.0798,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orangeAccent),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+
+                  Container(
+                    margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height* 0.0134),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {
+                            context.read<ZoneVideosBloc>().add(DeleteAllCategoryVideo());
+                            Navigator.of(context, rootNavigator: true).pop(true);
+                            context.read<VideosCubit>().showZoneMenu();
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width* 0.2083,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.pink.withOpacity(0.5),
+                                    spreadRadius: 4,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 3),
+                                  )
+                                ],
+                                color: Colors.red,
+                                border: Border.all(
+                                  color: const Color(0x60FF0000),
+                                ),
+                                borderRadius: BorderRadius.circular(5)
+                            ),
+
+                            child:  Center(
+                                child: Text(
+                                  "SI",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: size.width * 0.0855),
+                                )),
+                          ),
+                        ),
+
+                        SizedBox(width: MediaQuery.of(context).size.width* 0.0861,),
+
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop(true);
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width* 0.2778,
+                            height: MediaQuery.of(context).size.height* 0.1009,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.green.withOpacity(0.5),
+                                  spreadRadius: 4,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 3),
+                                )
+                              ],
+                              color:  Colors.green,
+                              border: Border.all(
+                                color: const Color(0x60177103),
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+
+                            child: Center(
+                                child: Text(
+                                  "NO",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: size.width * 0.0855),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (_, anim, __, child) {
+        Tween<Offset> tween;
+        if (anim.status == AnimationStatus.reverse) {
+          tween = Tween(begin: Offset(-1, 0), end: Offset.zero);
+        } else {
+          tween = Tween(begin: Offset(1, 0), end: Offset.zero);
+        }
+
+        return SlideTransition(
+          position: tween.animate(anim),
+          child: FadeTransition(
+            opacity: anim,
+            child: child,
+          ),
+        );
+      },
     );
   }
 
@@ -426,6 +621,7 @@ class _ZoneVideoState extends State<ZoneVideo> {
 // const Expanded(flex: 5,child: SizedBox()),
 // ],
 // ),
+
 }
 
 Color getColorFromGrade(int grade) {

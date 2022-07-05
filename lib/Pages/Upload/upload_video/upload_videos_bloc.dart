@@ -47,7 +47,7 @@ class UploadVideoBloc extends Bloc<UploadVideoEvent, UploadVideoState> {
     ///Image
 
     on<ImageSelectedUploadEvent>(
-        (event, emit) => emit(state.copyWith(image: event.image)));
+            (event, emit) => emit(state.copyWith(image: event.image)));
 
     on<UploadVideoButtonClickedEvent>(_uploadFile);
   }
@@ -71,21 +71,24 @@ class UploadVideoBloc extends Bloc<UploadVideoEvent, UploadVideoState> {
     _imageFile = await mFilePicker(type: EFileType.image);
 
     if (_imageFile != null) {
-       _imageFile = await ImageCropper().cropImage(sourcePath: _imageFile!.path,
+      _imageFile = (await ImageCropper().cropImage(sourcePath: _imageFile!.path,
 
-         aspectRatioPresets: [
-           CropAspectRatioPreset.square,
-         ],
-         androidUiSettings: const AndroidUiSettings(
+        aspectRatioPresets: [
 
-             cropFrameColor: Colors.orange,
-             activeControlsWidgetColor: Colors.orange,
-             toolbarTitle: 'Recortar',
-             toolbarColor: Colors.orange,
-             toolbarWidgetColor: Colors.white,
-             initAspectRatio: CropAspectRatioPreset.original,
-             lockAspectRatio: false),
-       );
+          CropAspectRatioPreset.square,
+
+        ],
+        androidUiSettings: const AndroidUiSettings(
+
+            cropFrameColor: Colors.orange,
+            activeControlsWidgetColor: Colors.orange,
+            toolbarTitle: 'Recortar',
+            toolbarColor: Colors.orange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: true,
+        ),
+      ));
       emit(state.copyWith(image: _imageFile!.path));
     }
   }

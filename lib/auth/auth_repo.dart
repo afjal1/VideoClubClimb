@@ -61,7 +61,7 @@ class AuthRepo {
 
       print(e);
 
-      throw Exception('error de inicio de sesion');
+      throw Exception('Error de inicio de sesion');
     }
   }
 
@@ -110,11 +110,57 @@ class AuthRepo {
         throw Exception(e.message);
       }
 
-      throw Exception('Error confirming code');
+      throw Exception('Error codigo confirmación');
     }
   }
 
   Future<void> signOut() async {
     await Amplify.Auth.signOut();
+  }
+
+  Future<bool> forgot({
+    required String email,}) async {
+    try {
+      final result = await Amplify.Auth.resetPassword(
+        username: email.trim(),
+      );
+
+      return result.isPasswordReset;
+    } on Exception catch (e) {
+      if (e is InvalidParameterException) {
+        throw Exception('Formato del Email incorrecto');
+      }
+
+      // if (e is UsernameExistsException) {
+      //   throw Exception('Email ID ya registrado');
+      // }
+
+      rethrow;
+    }
+  }
+
+  Future<bool?> confirmForgot({
+    required String email,
+    required String newpassword,
+    required String confirmationCode,
+  }) async {
+    try {
+      await Amplify.Auth.confirmResetPassword(
+          username: email.trim(),
+          newPassword: newpassword.trim(),
+          confirmationCode: confirmationCode.trim()
+      );
+
+      return null;
+    } on Exception catch (e) {
+      if (e is UserNotFoundException) {
+        throw Exception('Email no registrado');
+      }
+      if (e is CodeMismatchException) {
+        throw Exception(e.message);
+      }
+
+      throw Exception('Error codigo confirmación');
+    }
   }
 }

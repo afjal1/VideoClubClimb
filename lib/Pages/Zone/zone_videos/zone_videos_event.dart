@@ -12,6 +12,9 @@ class CategoryClickedZoneVideosEvent extends ZoneVideosEvent {
   CategoryClickedZoneVideosEvent({required this.categoryIndex});
 }
 
+class DeleteAllCategoryVideo extends ZoneVideosEvent{}
+
+
 class DeleteVideoZoneButtonClickedEvent extends ZoneVideosEvent {
   int index;
   DeleteVideoZoneButtonClickedEvent({required this.index});

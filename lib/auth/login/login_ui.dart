@@ -18,7 +18,6 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       backgroundColor: Colors.orange,
       body: BlocProvider(
         create: (BuildContext context) => LoginBloc(
@@ -54,7 +53,8 @@ class LoginPage extends StatelessWidget {
               _emailField(),
               SizedBox(height: 30,),
               _passwordField(),
-              const SizedBox(height: 50),
+              _forgotButton(),
+              const SizedBox(height: 6),
               _loginButton(),
             ],
           ),
@@ -69,13 +69,11 @@ class LoginPage extends StatelessWidget {
         Size size = MediaQuery.of(context).size;
 
         return TextFormField(
-
           keyboardType: TextInputType.emailAddress, //tipo de teclado
           cursorColor: Colors.white,
 
           style: TextStyle(color: Colors.white),
           decoration:  InputDecoration(
-
             labelText: 'Email',
             labelStyle: TextStyle(
               color: Colors.white,
@@ -230,19 +228,50 @@ class LoginPage extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
 
     return SafeArea(
-      child: TextButton(
-        child: Text(
-          '¿No tienes cuenta? Registrate',
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: size.width * 0.04845),
+      child: Container(
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height* 0.0134),
+        child: TextButton(
+          child: Text(
+            '¿No tienes cuenta? Registrate',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: size.width * 0.05415),
+          ),
+          onPressed: () {
+            context.read<AuthCubit>().showSignup();
+          },
         ),
-        onPressed: () {
-          context.read<AuthCubit>().showSignup();
-        },
       ),
     );
   }
+
+  Widget _forgotButton() {
+
+    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+      Size size = MediaQuery.of(context).size;
+
+      if (state.formSubmissionState is FormSubmitting) {
+        return const CircularProgressIndicator(
+          color: Colors.teal,
+        );
+      } else {
+        return Container(
+          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width* 0.3056),
+          child: TextButton(
+            child: Text(
+              '¿Olvidaste la contraseña?',
+              style: TextStyle(color: Colors.white, fontSize: size.width * 0.03705),
+            ),
+            onPressed: () {
+              context.read<AuthCubit>().showForgot();
+            },
+          ),
+        );
+      }
+    });
+
+  }
+
 
   void _showSnackBar(BuildContext context, String message) {
 
