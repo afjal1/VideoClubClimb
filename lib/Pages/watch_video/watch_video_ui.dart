@@ -6,6 +6,9 @@ import 'package:videoclubclimb/Pages/watch_video/watch_video_state.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../Media/Videos/video_state.dart';
+import '../../Media/Videos/videos_cubit.dart';
+
 class WatchVideo extends StatefulWidget {
   const WatchVideo({Key? key}) : super(key: key);
 
@@ -46,17 +49,19 @@ class _WatchVideoState extends State<WatchVideo> {
           );
         });
 
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(context.read<WatchVideosBloc>().state.UIName),
-          backgroundColor: Colors.orange,
-        ),
-        body: BlocBuilder<WatchVideosBloc, WatchVideosState>(
-            builder: (BuildContext context, state) {
-          return context.watch<WatchVideosBloc>().state.loaded
-              ? Center(child: Chewie(controller: chewieController))
-              : const Center(child: CircularProgressIndicator.adaptive());
-        }));
+    return BlocBuilder<VideosCubit, VideoState>(builder: (context, videoState) {
+      return Scaffold(
+          appBar: AppBar(
+            title: Text(context.read<WatchVideosBloc>().state.UIName),
+            backgroundColor: Colors.orange,
+          ),
+          body: BlocBuilder<WatchVideosBloc, WatchVideosState>(
+              builder: (BuildContext context, state) {
+            return context.watch<WatchVideosBloc>().state.loaded
+                ? Center(child: Chewie(controller: chewieController))
+                : const Center(child: CircularProgressIndicator.adaptive());
+          }));
+    });
   }
 }
 

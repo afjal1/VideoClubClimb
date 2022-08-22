@@ -6,7 +6,6 @@ import 'package:videoclubclimb/Pages/My_videos/my_videos_menu/my_videos_menu_ui.
 import 'package:videoclubclimb/Pages/Upload/upload_menu/upload_video_menu_ui.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_ui.dart';
 import '../../Media/Videos/video_state.dart';
-import '../../compress_video.dart';
 import '../../data_repo.dart';
 import '../Upload/upload_menu/upload_video_menu_bloc.dart';
 import '../Zone/zone_menu/zone_menu_bloc.dart';
@@ -390,71 +389,71 @@ class _HomePageState extends State<HomePage> {
                     height: 25,
                   ),
 
-                  Card(
-                    elevation: MediaQuery.of(context).size.height * 0.0134,
-                    color: Colors.red,
-                    margin: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height * 0.0134,
-                        horizontal: MediaQuery.of(context).size.width * 0.0556),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      // if you need this
-                      side: BorderSide(
-                        color: Colors.orange,
-                        width: MediaQuery.of(context).size.width * 0.0056,
-                      ),
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MyHomePage2()));
-                      },
-                      child: Container(
-                          padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.height * 0.0134,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white60,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.0672,
-                                margin: EdgeInsets.only(
-                                  right: MediaQuery.of(context).size.width *
-                                      0.0556,
-                                  left: MediaQuery.of(context).size.width *
-                                      0.0139,
-                                ),
-                                child: const Image(
-                                  image: AssetImage('assets/glogo.png'),
-                                ),
-                              ),
-                              Text(
-                                'Compress Video',
-                                style: TextStyle(
-                                  fontSize: size.width * 0.06555,
-                                ),
-                              ),
-                              const Expanded(child: SizedBox()),
-                              Icon(
-                                Icons.play_arrow_outlined,
-                                size: MediaQuery.of(context).size.width * 0.1,
-                                color: Colors.orange,
-                              ),
-                              SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.0278,
-                              )
-                            ],
-                          ) //declare your widget here
-                          ),
-                    ),
-                  ),
+                  // Card(
+                  //   elevation: MediaQuery.of(context).size.height * 0.0134,
+                  //   color: Colors.red,
+                  //   margin: EdgeInsets.symmetric(
+                  //       vertical: MediaQuery.of(context).size.height * 0.0134,
+                  //       horizontal: MediaQuery.of(context).size.width * 0.0556),
+                  //   shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(20),
+                  //     // if you need this
+                  //     side: BorderSide(
+                  //       color: Colors.orange,
+                  //       width: MediaQuery.of(context).size.width * 0.0056,
+                  //     ),
+                  //   ),
+                  //   child: GestureDetector(
+                  //     onTap: () {
+                  //       Navigator.push(
+                  //           context,
+                  //           MaterialPageRoute(
+                  //               builder: (context) => const MyHomePage2()));
+                  //     },
+                  //     child: Container(
+                  //         padding: EdgeInsets.all(
+                  //           MediaQuery.of(context).size.height * 0.0134,
+                  //         ),
+                  //         decoration: BoxDecoration(
+                  //           color: Colors.white60,
+                  //           borderRadius: BorderRadius.circular(20),
+                  //         ),
+                  //         child: Row(
+                  //           children: [
+                  //             Container(
+                  //               height:
+                  //                   MediaQuery.of(context).size.height * 0.0672,
+                  //               margin: EdgeInsets.only(
+                  //                 right: MediaQuery.of(context).size.width *
+                  //                     0.0556,
+                  //                 left: MediaQuery.of(context).size.width *
+                  //                     0.0139,
+                  //               ),
+                  //               child: const Image(
+                  //                 image: AssetImage('assets/glogo.png'),
+                  //               ),
+                  //             ),
+                  //             Text(
+                  //               'Compress Video',
+                  //               style: TextStyle(
+                  //                 fontSize: size.width * 0.06555,
+                  //               ),
+                  //             ),
+                  //             const Expanded(child: SizedBox()),
+                  //             Icon(
+                  //               Icons.play_arrow_outlined,
+                  //               size: MediaQuery.of(context).size.width * 0.1,
+                  //               color: Colors.orange,
+                  //             ),
+                  //             SizedBox(
+                  //               width:
+                  //                   MediaQuery.of(context).size.width * 0.0278,
+                  //             )
+                  //           ],
+                  //         ) //declare your widget here
+                  //         ),
+                  //   ),
+                  // ),
 
                   ///COMPRESS
 

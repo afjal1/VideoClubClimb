@@ -65,7 +65,7 @@
 //             return ListView.builder(
 //               shrinkWrap: true,
 //               padding: const EdgeInsets.only(top: 20),
-//               itemCount: state.totalVideos, // TODO -- total categories in state
+//               itemCount: state.totalVideos,
 //               itemBuilder: (context, index) {
 //                 return Center(
 //                   child: Padding(
@@ -299,16 +299,14 @@ class _MyVideosUIState extends State<MyVideosUI> {
         body: Stack(children: [
           BlocBuilder<MyVideosBloc, MyVideosState>(
             builder: (BuildContext context, state) {
-              if (context.watch<MyVideosBloc>().state.items.isEmpty) {
-                return const Center(child: Text("No hay contenido"));
-              }
-              if (context.watch<MyVideosBloc>().state
-                  is MyVideoFormSubmitting) {
+              if (state is MyVideoFormSubmitting) {
                 return shimmerEffect(size);
               }
+              if (state.items.isEmpty) {
+                return const Center(child: Text("No hay contenido"));
+              }
 
-              return context.watch<MyVideosBloc>().state.items.first.type ==
-                      FileType.PHOTOS
+              return state.items.first.type == FileType.PHOTOS
                   ? const Center(
                       child: CircularProgressIndicator(
                         color: Colors.teal,
@@ -318,11 +316,7 @@ class _MyVideosUIState extends State<MyVideosUI> {
                       shrinkWrap: true,
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.0269),
-                      itemCount: context
-                          .watch<MyVideosBloc>()
-                          .state
-                          .items
-                          .length, // TODO -- total categories in state
+                      itemCount: state.items.length,
                       itemBuilder: (context, index) {
                         return Center(
                           child: Padding(
