@@ -153,9 +153,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_ui.dart';
 import 'package:videoclubclimb/models/FileType.dart';
 
-import '../../../data_repo.dart';
-import '../../watch_video/watch_video_bloc.dart';
-import '../../watch_video/watch_video_ui.dart';
+import '../../../Media/Videos/videos_cubit.dart';
 import 'my_videos_bloc.dart';
 import 'my_videos_event.dart';
 import 'my_videos_state.dart';
@@ -336,69 +334,69 @@ class _MyVideosUIState extends State<MyVideosUI> {
                                 InkWell(
                                   splashColor: Colors.orange,
                                   onTap: () {
-                                    // context.read<VideosCubit>().watchVideo(
-                                    //       category: context
-                                    //           .read<MyVideosBloc>()
-                                    //           .state
-                                    //           .items
-                                    //           .elementAt(index)
-                                    //           .category!,
-                                    //       name: context
-                                    //           .read<MyVideosBloc>()
-                                    //           .state
-                                    //           .items
-                                    //           .elementAt(index)
-                                    //           .name!,
-                                    //       UIName: context
-                                    //           .read<MyVideosBloc>()
-                                    //           .state
-                                    //           .items
-                                    //           .elementAt(index)
-                                    //           .name!,
-                                    //       url: context
-                                    //           .read<MyVideosBloc>()
-                                    //           .state
-                                    //           .items
-                                    //           .elementAt(index)
-                                    //           .s3key!,
-                                    //     );
+                                    context.read<VideosCubit>().watchVideo(
+                                          category: context
+                                              .read<MyVideosBloc>()
+                                              .state
+                                              .items
+                                              .elementAt(index)
+                                              .category!,
+                                          name: context
+                                              .read<MyVideosBloc>()
+                                              .state
+                                              .items
+                                              .elementAt(index)
+                                              .name!,
+                                          UIName: context
+                                              .read<MyVideosBloc>()
+                                              .state
+                                              .items
+                                              .elementAt(index)
+                                              .name!,
+                                          url: context
+                                              .read<MyVideosBloc>()
+                                              .state
+                                              .items
+                                              .elementAt(index)
+                                              .s3key!,
+                                        );
 
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => BlocProvider(
-                                            create: (BuildContext context) =>
-                                                WatchVideosBloc(
-                                              dataRepo:
-                                                  context.read<DataRepo>(),
-                                              category: context
-                                                  .read<MyVideosBloc>()
-                                                  .state
-                                                  .items
-                                                  .elementAt(index)
-                                                  .category!,
-                                              name: context
-                                                  .read<MyVideosBloc>()
-                                                  .state
-                                                  .items
-                                                  .elementAt(index)
-                                                  .name!,
-                                              UIName: context
-                                                  .read<MyVideosBloc>()
-                                                  .state
-                                                  .items
-                                                  .elementAt(index)
-                                                  .name!,
-                                              url: context
-                                                  .read<MyVideosBloc>()
-                                                  .state
-                                                  .items
-                                                  .elementAt(index)
-                                                  .s3key!,
-                                            ),
-                                            child: const WatchVideo(),
-                                          ),
-                                        ));
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //       builder: (context) => BlocProvider(
+                                    //         create: (BuildContext context) =>
+                                    //             WatchVideosBloc(
+                                    //           dataRepo:
+                                    //               context.read<DataRepo>(),
+                                    //           category: context
+                                    //               .read<MyVideosBloc>()
+                                    //               .state
+                                    //               .items
+                                    //               .elementAt(index)
+                                    //               .category!,
+                                    //           name: context
+                                    //               .read<MyVideosBloc>()
+                                    //               .state
+                                    //               .items
+                                    //               .elementAt(index)
+                                    //               .name!,
+                                    //           UIName: context
+                                    //               .read<MyVideosBloc>()
+                                    //               .state
+                                    //               .items
+                                    //               .elementAt(index)
+                                    //               .name!,
+                                    //           url: context
+                                    //               .read<MyVideosBloc>()
+                                    //               .state
+                                    //               .items
+                                    //               .elementAt(index)
+                                    //               .s3key!,
+                                    //         ),
+                                    //         child: const WatchVideo(),
+                                    //       ),
+                                    //     ));
                                   },
                                   child: Card(
                                     elevation: 10,

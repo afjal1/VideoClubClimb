@@ -5,9 +5,9 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:videoclubclimb/Media/Videos/videos_cubit.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_ui.dart';
-
 import '../../../data_repo.dart';
 import '../../watch_video/watch_video_bloc.dart';
+import '../../watch_video/watch_video_event.dart';
 import '../../watch_video/watch_video_ui.dart';
 import 'zone_videos_bloc.dart';
 import 'zone_videos_event.dart';
@@ -239,7 +239,6 @@ class _ZoneVideoState extends State<ZoneVideo> {
                   context.watch<ZoneVideosBloc>().state.videoUrls.isEmpty) {
                 return videoShimmerEffect(size);
               }
-
               if (context.watch<ZoneVideosBloc>().state.videoUrls.isEmpty) {
                 return const Center(child: Text('No hay videos'));
               }
@@ -259,128 +258,128 @@ class _ZoneVideoState extends State<ZoneVideo> {
                     splashColor: Colors.orange,
                     onTap: () {
                       if (context.read<ZoneVideosBloc>().state.isSearching) {
-                        // context.read<VideosCubit>().watchVideo(
-                        //       category: context
-                        //           .read<ZoneVideosBloc>()
-                        //           .state
-                        //           .searchedVideos
-                        //           .elementAt(index)
-                        //           .category!,
-                        //       name: context
-                        //           .read<ZoneVideosBloc>()
-                        //           .state
-                        //           .searchedVideos
-                        //           .elementAt(index)
-                        //           .name!,
-                        //       UIName: context
-                        //           .read<ZoneVideosBloc>()
-                        //           .state
-                        //           .searchedVideos
-                        //           .elementAt(index)
-                        //           .name!,
-                        //       url: context
-                        //           .read<ZoneVideosBloc>()
-                        //           .state
-                        //           .searchVideoUrls
-                        //           .elementAt(index),
-                        //     );
+                        context.read<VideosCubit>().watchVideo(
+                              category: context
+                                  .read<ZoneVideosBloc>()
+                                  .state
+                                  .searchedVideos
+                                  .elementAt(index)
+                                  .category!,
+                              name: context
+                                  .read<ZoneVideosBloc>()
+                                  .state
+                                  .searchedVideos
+                                  .elementAt(index)
+                                  .name!,
+                              UIName: context
+                                  .read<ZoneVideosBloc>()
+                                  .state
+                                  .searchedVideos
+                                  .elementAt(index)
+                                  .name!,
+                              url: context
+                                  .read<ZoneVideosBloc>()
+                                  .state
+                                  .searchVideoUrls
+                                  .elementAt(index),
+                            );
 
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BlocProvider(
-                                create: (BuildContext context) =>
-                                    WatchVideosBloc(
-                                  dataRepo: context.read<DataRepo>(),
-                                  category: context
-                                      .read<ZoneVideosBloc>()
-                                      .state
-                                      .searchedVideos
-                                      .elementAt(index)
-                                      .category!,
-                                  name: context
-                                      .read<ZoneVideosBloc>()
-                                      .state
-                                      .searchedVideos
-                                      .elementAt(index)
-                                      .name!,
-                                  UIName: context
-                                      .read<ZoneVideosBloc>()
-                                      .state
-                                      .searchedVideos
-                                      .elementAt(index)
-                                      .name!,
-                                  url: context
-                                      .read<ZoneVideosBloc>()
-                                      .state
-                                      .searchVideoUrls
-                                      .elementAt(index),
-                                ),
-                                child: const WatchVideo(),
-                              ),
-                            ));
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => BlocProvider(
+                        //         create: (BuildContext context) =>
+                        //             WatchVideosBloc(
+                        //           dataRepo: context.read<DataRepo>(),
+                        //           category: context
+                        //               .read<ZoneVideosBloc>()
+                        //               .state
+                        //               .searchedVideos
+                        //               .elementAt(index)
+                        //               .category!,
+                        //           name: context
+                        //               .read<ZoneVideosBloc>()
+                        //               .state
+                        //               .searchedVideos
+                        //               .elementAt(index)
+                        //               .name!,
+                        //           UIName: context
+                        //               .read<ZoneVideosBloc>()
+                        //               .state
+                        //               .searchedVideos
+                        //               .elementAt(index)
+                        //               .name!,
+                        //           url: context
+                        //               .read<ZoneVideosBloc>()
+                        //               .state
+                        //               .searchVideoUrls
+                        //               .elementAt(index),
+                        //         ),
+                        //         child: const WatchVideo(),
+                        //       ),
+                        //     ));
                       } else {
                         // print('hello');
-                        // context.read<VideosCubit>().watchVideo(
-                        //       category: context
-                        //           .read<ZoneVideosBloc>()
-                        //           .state
-                        //           .files
-                        //           .elementAt(index)
-                        //           .category!,
-                        //       name: context
-                        //           .read<ZoneVideosBloc>()
-                        //           .state
-                        //           .files
-                        //           .elementAt(index)
-                        //           .name!,
-                        //       UIName: context
-                        //           .read<ZoneVideosBloc>()
-                        //           .state
-                        //           .files
-                        //           .elementAt(index)
-                        //           .name!,
-                        //       url: context
-                        //           .read<ZoneVideosBloc>()
-                        //           .state
-                        //           .videoUrls
-                        //           .elementAt(index),
-                        //     );
+                        context.read<VideosCubit>().watchVideo(
+                              category: context
+                                  .read<ZoneVideosBloc>()
+                                  .state
+                                  .files
+                                  .elementAt(index)
+                                  .category!,
+                              name: context
+                                  .read<ZoneVideosBloc>()
+                                  .state
+                                  .files
+                                  .elementAt(index)
+                                  .name!,
+                              UIName: context
+                                  .read<ZoneVideosBloc>()
+                                  .state
+                                  .files
+                                  .elementAt(index)
+                                  .name!,
+                              url: context
+                                  .read<ZoneVideosBloc>()
+                                  .state
+                                  .videoUrls
+                                  .elementAt(index),
+                            );
 
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BlocProvider(
-                                create: (BuildContext context) =>
-                                    WatchVideosBloc(
-                                  dataRepo: context.read<DataRepo>(),
-                                  category: context
-                                      .read<ZoneVideosBloc>()
-                                      .state
-                                      .files
-                                      .elementAt(index)
-                                      .category!,
-                                  name: context
-                                      .read<ZoneVideosBloc>()
-                                      .state
-                                      .files
-                                      .elementAt(index)
-                                      .name!,
-                                  UIName: context
-                                      .read<ZoneVideosBloc>()
-                                      .state
-                                      .files
-                                      .elementAt(index)
-                                      .name!,
-                                  url: context
-                                      .read<ZoneVideosBloc>()
-                                      .state
-                                      .videoUrls
-                                      .elementAt(index),
-                                ),
-                                child: const WatchVideo(),
-                              ),
-                            ));
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => BlocProvider(
+                        //         create: (BuildContext context) =>
+                        //             WatchVideosBloc(
+                        //           dataRepo: context.read<DataRepo>(),
+                        //           category: context
+                        //               .read<ZoneVideosBloc>()
+                        //               .state
+                        //               .files
+                        //               .elementAt(index)
+                        //               .category!,
+                        //           name: context
+                        //               .read<ZoneVideosBloc>()
+                        //               .state
+                        //               .files
+                        //               .elementAt(index)
+                        //               .name!,
+                        //           UIName: context
+                        //               .read<ZoneVideosBloc>()
+                        //               .state
+                        //               .files
+                        //               .elementAt(index)
+                        //               .name!,
+                        //           url: context
+                        //               .read<ZoneVideosBloc>()
+                        //               .state
+                        //               .videoUrls
+                        //               .elementAt(index),
+                        //         ),
+                        //         child: const WatchVideo(),
+                        //       ),
+                        //     ));
                       }
                     },
                     child: Container(
