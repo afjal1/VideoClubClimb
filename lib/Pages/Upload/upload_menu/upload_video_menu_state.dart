@@ -1,3 +1,11 @@
+class UploadVideoMenuFormSubmitting extends UploadVideoMenuState {
+  UploadVideoMenuFormSubmitting(
+      {required List<String> categories,
+      required List<String> videos,
+      required List<String> videosNames})
+      : super(categories: categories, videos: videos, videosNames: videosNames);
+}
+
 class UploadVideoMenuState {
   int totalCategories;
   int currentCategory;
@@ -30,11 +38,11 @@ class UploadVideoMenuState {
       totalCategories: totalCategories ?? this.totalCategories,
       currentCategory: currentCategory ?? this.currentCategory,
       totalVideosInCurrentCategory:
-      totalVideosInCurrentCategory ?? this.totalVideosInCurrentCategory,
-      categories: categories?? this.categories,
-      videos: videos?? this.videos,
-      videosNames: videosNames?? this.videosNames,
-      searchedKeyword: searchedKeyword?? this.searchedKeyword,
+          totalVideosInCurrentCategory ?? this.totalVideosInCurrentCategory,
+      categories: categories ?? this.categories,
+      videos: videos ?? this.videos,
+      videosNames: videosNames ?? this.videosNames,
+      searchedKeyword: searchedKeyword ?? this.searchedKeyword,
     );
   }
 }

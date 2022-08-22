@@ -33,13 +33,12 @@ class AuthNavigator extends StatelessWidget {
             ],
           ],
           onPopPage: (route, result) {
-
             final page = route.settings as MaterialPage;
-            if(page.child is ConfirmationPage) {
+            if (page.child is ConfirmationPage) {
               context.read<AuthCubit>().showSignup();
             }
             final page1 = route.settings as MaterialPage;
-            if(page1.child is ConfirmationForgotPage) {
+            if (page1.child is ConfirmationForgotPage) {
               context.read<AuthCubit>().showSignup();
             }
             return route.didPop(result);

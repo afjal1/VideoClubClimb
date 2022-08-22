@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,7 +50,9 @@ class LoginPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _emailField(),
-              SizedBox(height: 30,),
+              const SizedBox(
+                height: 30,
+              ),
               _passwordField(),
               _forgotButton(),
               const SizedBox(height: 6),
@@ -72,52 +73,32 @@ class LoginPage extends StatelessWidget {
           keyboardType: TextInputType.emailAddress, //tipo de teclado
           cursorColor: Colors.white,
 
-          style: TextStyle(color: Colors.white),
-          decoration:  InputDecoration(
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
             labelText: 'Email',
-            labelStyle: TextStyle(
-              color: Colors.white,
-              fontSize: size.width * 0.0513
-            ),
-            floatingLabelStyle: TextStyle(
-              color: Colors.blue,
-              fontSize: size.width * 0.0513
-            ),
+            labelStyle:
+                TextStyle(color: Colors.white, fontSize: size.width * 0.0513),
+            floatingLabelStyle:
+                TextStyle(color: Colors.blue, fontSize: size.width * 0.0513),
             floatingLabelBehavior: FloatingLabelBehavior.auto,
-
-            errorStyle: TextStyle(
+            errorStyle: const TextStyle(
               color: Colors.white,
             ),
-
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide(
-                color: Colors.white
-              )
-            ),
-
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.white)),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(
-                    color: Colors.blue
-                )
-            ),
-
+                borderSide: const BorderSide(color: Colors.blue)),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(
-                    color: Colors.white
-                )
+                borderSide: const BorderSide(color: Colors.white)),
+            prefixIcon: const Icon(
+              Icons.person,
+              color: Colors.white,
             ),
-
-            prefixIcon: Icon(
-            Icons.person,
-            color: Colors.white,
-          ),
-
             hintText: 'Email',
-            hintStyle: TextStyle(color: Colors.transparent),
-
+            hintStyle: const TextStyle(color: Colors.transparent),
           ),
           validator: (value) =>
               state.isValidEmail ? null : 'Dirección Email no valida',
@@ -139,53 +120,37 @@ class LoginPage extends StatelessWidget {
           keyboardType: TextInputType.emailAddress, //tipo de teclado
           cursorColor: Colors.white,
 
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
 
-          decoration:  InputDecoration(
-
+          decoration: InputDecoration(
             labelText: 'Contraseña',
             labelStyle: TextStyle(
-                color: Colors.white,
-                fontSize: size.width * 0.0513,
+              color: Colors.white,
+              fontSize: size.width * 0.0513,
             ),
             floatingLabelStyle: TextStyle(
-                color: Colors.blue,
-                fontSize: size.width * 0.0513,
+              color: Colors.blue,
+              fontSize: size.width * 0.0513,
             ),
             floatingLabelBehavior: FloatingLabelBehavior.auto,
-
-            errorStyle: TextStyle(
+            errorStyle: const TextStyle(
               color: Colors.white,
             ),
-
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(
-                    color: Colors.white
-                )
-            ),
-
+                borderSide: const BorderSide(color: Colors.white)),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(
-                    color: Colors.blue
-                )
-            ),
-
+                borderSide: const BorderSide(color: Colors.blue)),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(
-                    color: Colors.white
-                )
-            ),
-            prefixIcon: Icon(
+                borderSide: const BorderSide(color: Colors.white)),
+            prefixIcon: const Icon(
               Icons.security,
               color: Colors.white,
             ),
-
             hintText: 'Contraseña',
-            hintStyle: TextStyle(color: Colors.transparent),
-
+            hintStyle: const TextStyle(color: Colors.transparent),
           ),
           validator: (value) => state.isValidPassword
               ? null
@@ -201,7 +166,6 @@ class LoginPage extends StatelessWidget {
   Widget _loginButton() {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       if (state.formSubmissionState is FormSubmitting) {
-
         return const CircularProgressIndicator(
           color: Colors.teal,
         );
@@ -210,7 +174,7 @@ class LoginPage extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             primary: Colors.teal,
             onPrimary: Colors.white,
-            elevation: MediaQuery.of(context).size.height* 0.0067,
+            elevation: MediaQuery.of(context).size.height * 0.0067,
           ),
           autofocus: true,
           child: const Text('Iniciar sesion'),
@@ -229,13 +193,13 @@ class LoginPage extends StatelessWidget {
 
     return SafeArea(
       child: Container(
-        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height* 0.0134),
+        margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height * 0.0134),
         child: TextButton(
           child: Text(
             '¿No tienes cuenta? Registrate',
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: size.width * 0.05415),
+            style:
+                TextStyle(color: Colors.white, fontSize: size.width * 0.05415),
           ),
           onPressed: () {
             context.read<AuthCubit>().showSignup();
@@ -246,35 +210,27 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _forgotButton() {
-
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       Size size = MediaQuery.of(context).size;
 
-      if (state.formSubmissionState is FormSubmitting) {
-        return const CircularProgressIndicator(
-          color: Colors.teal,
-        );
-      } else {
-        return Container(
-          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width* 0.3056),
-          child: TextButton(
-            child: Text(
-              '¿Olvidaste la contraseña?',
-              style: TextStyle(color: Colors.white, fontSize: size.width * 0.03705),
-            ),
-            onPressed: () {
-              context.read<AuthCubit>().showForgot();
-            },
+      return Container(
+        margin:
+            EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.3056),
+        child: TextButton(
+          child: Text(
+            '¿Olvidaste la contraseña?',
+            style:
+                TextStyle(color: Colors.white, fontSize: size.width * 0.03705),
           ),
-        );
-      }
+          onPressed: () {
+            context.read<AuthCubit>().showForgot();
+          },
+        ),
+      );
     });
-
   }
 
-
   void _showSnackBar(BuildContext context, String message) {
-
     final snackBar = SnackBar(
       content: Text(message),
     );

@@ -10,6 +10,7 @@ class WatchVideo extends StatefulWidget {
   const WatchVideo({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _WatchVideoState createState() => _WatchVideoState();
 }
 
@@ -24,7 +25,6 @@ class _WatchVideoState extends State<WatchVideo> {
 
   @override
   void dispose() {
-    print('dispose called');
     chewieController.dispose();
     super.dispose();
   }
@@ -47,8 +47,10 @@ class _WatchVideoState extends State<WatchVideo> {
         });
 
     return Scaffold(
-        appBar:
-            AppBar(title: Text(context.read<WatchVideosBloc>().state.UIName)),
+        appBar: AppBar(
+          title: Text(context.read<WatchVideosBloc>().state.UIName),
+          backgroundColor: Colors.orange,
+        ),
         body: BlocBuilder<WatchVideosBloc, WatchVideosState>(
             builder: (BuildContext context, state) {
           return context.watch<WatchVideosBloc>().state.loaded

@@ -9,7 +9,6 @@ import 'Videos/videos_navigator.dart';
 import 'media_cubit.dart';
 import 'media_state.dart';
 
-
 class MediaNavigator extends StatelessWidget {
   const MediaNavigator({Key? key}) : super(key: key);
 
@@ -23,10 +22,9 @@ class MediaNavigator extends StatelessWidget {
               MaterialPage(
                 child: BlocProvider(
                     create: (BuildContext context) => VideosCubit(
-                        sessionCubit: context.read<SessionCubit>(),
-                        dataRepo: context.read<DataRepo>(),
+                          sessionCubit: context.read<SessionCubit>(),
+                          dataRepo: context.read<DataRepo>(),
                         ),
-
                     child: const VideosNavigator()),
               ),
           ],

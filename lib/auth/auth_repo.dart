@@ -11,26 +11,22 @@ class AuthRepo {
           .value;
 
       return userID;
-    }on Exception catch (e) {
-
+    } on Exception catch (e) {
       throw Exception(e);
     }
   }
 
   Future<String?> attemptAutoLogin() async {
-
     try {
       final session = await Amplify.Auth.fetchAuthSession();
 
-      if(session.isSignedIn == false){
+      if (session.isSignedIn == false) {
         throw Exception(null);
       }
 
-      String res= await getUserIDFromAttributes();
+      String res = await getUserIDFromAttributes();
       return (res);
-
-    }on Exception {
-
+    } on Exception {
       rethrow;
     }
   }
@@ -39,23 +35,19 @@ class AuthRepo {
     required String email,
     required String password,
   }) async {
-
     try {
       final res = await Amplify.Auth.signIn(
         username: email.trim(),
         password: password.trim(),
       );
 
-      return res.isSignedIn? (await getUserIDFromAttributes()) : null;
-
-    }on Exception catch (e){
-
-
-      if(e is NotAuthorizedException){
+      return res.isSignedIn ? (await getUserIDFromAttributes()) : null;
+    } on Exception catch (e) {
+      if (e is NotAuthorizedException) {
         throw Exception('Email o crontraseña incorrecto');
       }
 
-      if(e is UserNotFoundException){
+      if (e is UserNotFoundException) {
         throw Exception('Email no registrado');
       }
 
@@ -69,23 +61,21 @@ class AuthRepo {
     required String email,
     required String password,
   }) async {
-
-    try{
+    try {
       final result = await Amplify.Auth.signUp(
         username: email.trim(),
         password: password.trim(),
-        options: CognitoSignUpOptions(userAttributes: {CognitoUserAttributeKey.email: email.trim()}),
+        options: CognitoSignUpOptions(
+            userAttributes: {CognitoUserAttributeKey.email: email.trim()}),
       );
 
       return result.isSignUpComplete;
-    }
-    on Exception catch (e){
-
-      if(e is InvalidParameterException){
+    } on Exception catch (e) {
+      if (e is InvalidParameterException) {
         throw Exception('Formato del Email incorrecto');
       }
 
-      if(e is UsernameExistsException){
+      if (e is UsernameExistsException) {
         throw Exception('Email ID ya registrado');
       }
 
@@ -97,16 +87,15 @@ class AuthRepo {
     required String email,
     required String confirmationCode,
   }) async {
-    try{
+    try {
       final result = await Amplify.Auth.confirmSignUp(
         username: email.trim(),
         confirmationCode: confirmationCode.trim(),
       );
 
       return result.isSignUpComplete;
-    }
-    on Exception catch (e){
-      if(e is CodeMismatchException){
+    } on Exception catch (e) {
+      if (e is CodeMismatchException) {
         throw Exception(e.message);
       }
 
@@ -119,7 +108,8 @@ class AuthRepo {
   }
 
   Future<bool> forgot({
-    required String email,}) async {
+    required String email,
+  }) async {
     try {
       final result = await Amplify.Auth.resetPassword(
         username: email.trim(),
@@ -148,8 +138,7 @@ class AuthRepo {
       await Amplify.Auth.confirmResetPassword(
           username: email.trim(),
           newPassword: newpassword.trim(),
-          confirmationCode: confirmationCode.trim()
-      );
+          confirmationCode: confirmationCode.trim());
 
       return null;
     } on Exception catch (e) {

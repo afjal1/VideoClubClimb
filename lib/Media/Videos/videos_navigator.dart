@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:videoclubclimb/Media/Videos/video_state.dart';
 import 'package:videoclubclimb/Media/Videos/videos_cubit.dart';
 
-import 'package:videoclubclimb/Pages/Homepage/homepage_bloc.dart';
 import 'package:videoclubclimb/Pages/Homepage/homepage_ui.dart';
 import 'package:videoclubclimb/Pages/My_videos/my_videos/my_videos_bloc.dart';
 import 'package:videoclubclimb/Pages/My_videos/my_videos/my_videos_ui.dart';
@@ -17,8 +16,6 @@ import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_bloc.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_ui.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_videos/zone_videos_bloc.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_videos/zone_videos_ui.dart';
-import 'package:videoclubclimb/Pages/watch_video/watch_video_bloc.dart';
-import 'package:videoclubclimb/Pages/watch_video/watch_video_ui.dart';
 import 'package:videoclubclimb/auth/auth_repo.dart';
 
 import '../../data_repo.dart';
@@ -34,21 +31,12 @@ class VideosNavigator extends StatelessWidget {
           pages: [
             ///*********************** HomePage ***************///
             if (state is InitialStateOfVideos)
-              MaterialPage(
-                child: BlocProvider(
-                    create: (BuildContext context) =>
-                        HomepageBloc(dataRepo: context.read<DataRepo>()),
-                    child: const HomePage()),
-              ),
+              const MaterialPage(child: HomePage()),
 
             if (state is ViewInicio)
-              MaterialPage(
-                  child: BlocProvider(
-                create: (BuildContext context) => HomepageBloc(
-                  dataRepo: context.read<DataRepo>(),
-                ),
-                child: const HomePage(),
-              )),
+              const MaterialPage(
+                child: HomePage(),
+              ),
 
             ///*********************** ZONE Menu/Videos ***************///
             if (state is ViewingZoneMenu || state is WatchingVideo) ...[
@@ -59,20 +47,25 @@ class VideosNavigator extends StatelessWidget {
                     child: const ZoneMenu()),
               ),
 
-              ///************************ WatchingVideo *********************///
-              if (state is WatchingVideo)
-                MaterialPage(
-                  child: BlocProvider(
-                    create: (BuildContext context) => WatchVideosBloc(
-                      dataRepo: context.read<DataRepo>(),
-                      category: state.category,
-                      name: state.name,
-                      UIName: state.UIName,
-                      url: state.url,
-                    ),
-                    child: const WatchVideo(),
-                  ),
-                ),
+              // ///************************ WatchingVideo *********************///
+              // if (state is WatchingVideo)
+              //   MaterialPage(
+              //     child: BlocProvider(
+              //       create: (BuildContext context) => WatchVideosBloc(
+              //         dataRepo: context.read<DataRepo>(),
+              //         category: state.category,
+              //         name: state.name,
+              //         UIName: state.UIName,
+              //         url: state.url,
+              //       ),
+              //       child: WatchVideo(
+              //         category: state.category,
+              //         name: state.name,
+              //         UIName: state.UIName,
+              //         url: state.url,
+              //       ),
+              //     ),
+              //   ),
             ],
 
             if (state is ViewingZoneVideos)
@@ -146,7 +139,7 @@ class VideosNavigator extends StatelessWidget {
 
             if (page.child is UploadVideo) {}
 
-            if (page.child is WatchingVideo) {}
+            //  if (page.child is WatchingVideo) {}
 
             return route.didPop(result);
           },

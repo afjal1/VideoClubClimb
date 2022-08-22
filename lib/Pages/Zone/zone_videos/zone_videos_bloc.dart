@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:videoclubclimb/auth/form_submission_state.dart';
 import 'package:videoclubclimb/models/File.dart';
 
 import '../../../data_repo.dart';
@@ -15,12 +14,12 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
     required this.dataRepo,
     required this.category,
   }) : super(ZoneVideosState(
-    files: [],
-    categories: [],
-    searchedVideos: [],
-    images: [],
-    videoUrls: [],
-  )) {
+          files: [],
+          categories: [],
+          searchedVideos: [],
+          images: [],
+          videoUrls: [],
+        )) {
     on<DeleteVideoZoneButtonClickedEvent>(_onDeleteVideoButtonClickedEvent);
     // on<CategoryClickedZoneVideosEvent>(_getVideosInACategoryZoneVideo);
     on<GetZoneVideosEvent>(_getZoneVideos);
@@ -32,16 +31,12 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
 
     on<GetVideoFiles>(_getVideoFiles);
     on<DeleteAllCategoryVideo>(_deleteAllCategory);
-
-
   }
 
   FutureOr<void> _onDeleteVideoButtonClickedEvent(
-      DeleteVideoZoneButtonClickedEvent event,
-      Emitter<ZoneVideosState> emit,
-      ) async {
-    print('TODO -- implement this');
-
+    DeleteVideoZoneButtonClickedEvent event,
+    Emitter<ZoneVideosState> emit,
+  ) async {
     // List<String> videos = await dataRepo.getSectorVideos(category);
     //
     // await dataRepo.deleteVideo(category, videos[event.index]);
@@ -91,7 +86,8 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
   //   }
   // }
 
-  FutureOr<void> _getZoneVideos(GetZoneVideosEvent event, Emitter<ZoneVideosState> emit) async {
+  FutureOr<void> _getZoneVideos(
+      GetZoneVideosEvent event, Emitter<ZoneVideosState> emit) async {
     // emit(state.copyWith(formSubmissionState: FormSubmitting()));
 
     // List<File> files = await dataRepo.listFilesByCategory(category);
@@ -105,7 +101,8 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
   //   emit(state.copyWith(totalGrados: grados.length, grados: grados, ));
   // }
 
-  FutureOr<void> _toggleSearching(ToggleSearching event, Emitter<ZoneVideosState> emit) {
+  FutureOr<void> _toggleSearching(
+      ToggleSearching event, Emitter<ZoneVideosState> emit) {
     if (state.isSearching) {
       emit(state.copyWith(isSearching: false));
     } else {
@@ -113,7 +110,8 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
     }
   }
 
-  FutureOr<void> _searchKeywordChanged(SearchKeywordChanged event, Emitter<ZoneVideosState> emit) {
+  FutureOr<void> _searchKeywordChanged(
+      SearchKeywordChanged event, Emitter<ZoneVideosState> emit) {
     emit(state.copyWith(searchedKeyword: event.value));
   }
 
@@ -151,14 +149,20 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
     );
   }
 
-  FutureOr<void> _searchByChanged(SearchByEvent event, Emitter<ZoneVideosState> emit) {
+  FutureOr<void> _searchByChanged(
+      SearchByEvent event, Emitter<ZoneVideosState> emit) {
     emit(state.copyWith(searchBy: event.searchBy));
   }
 
-
-  FutureOr<void> _getVideoFiles(GetVideoFiles event, Emitter<ZoneVideosState> emit) async {
+  FutureOr<void> _getVideoFiles(
+      GetVideoFiles event, Emitter<ZoneVideosState> emit) async {
     try {
-      emit(state.copyWith(formSubmissionState: FormSubmitting()));
+      emit(FormSubmitting1(
+          files: [],
+          images: [],
+          videoUrls: [],
+          categories: [],
+          searchedVideos: []));
 
       List<File> files = await dataRepo.listFilesByCategory(category);
       List<String> images = [];
@@ -174,24 +178,23 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
         url.add(link);
       }
 
-      print('len: ' + images.length.toString());
-      print(url.toString());
-      emit(state.copyWith(totalFiles: files.length, files: files, images: images, videoUrls: url));
-      emit(state.copyWith(formSubmissionState: FormSubmissionSuccessful()));
+      emit(state.copyWith(
+          totalFiles: files.length,
+          files: files,
+          images: images,
+          videoUrls: url));
+      //   emit(state.copyWith(formSubmissionState: FormSubmissionSuccessful()));
     } catch (e) {
       print('ZoneVideosBloc._getVideoFiles: $e');
     }
   }
 
-  Future<void> _deleteAllCategory(DeleteAllCategoryVideo event, Emitter<ZoneVideosState> emit)
-  async{
-    print("Deleting");
+  Future<void> _deleteAllCategory(
+      DeleteAllCategoryVideo event, Emitter<ZoneVideosState> emit) async {
     // String id=await authRepo.getUserIDFromAttributes();
-    print("Deleting");
+
     await dataRepo.deleteAllCategory(category);
-
   }
-
 }
 
 int mapGradeToIndex(String? newValue) {

@@ -15,7 +15,7 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
   @override
   Widget build(BuildContext context) {
     _getVideoThumbnail() async {
-      var file;
+      File? file;
 
       // if (Platform.isMacOS) {
       //   final typeGroup = XTypeGroup(label: 'videos', extensions: ['mov', 'mp4']);
@@ -35,23 +35,20 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
 
       if (file != null) {
         _thumbnailFile = await VideoCompress.getFileThumbnail(file.path);
-        setState(() {
-          print(_thumbnailFile);
-        });
+        setState(() {});
       }
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text('File Thumbnail')),
+      appBar: AppBar(title: const Text('File Thumbnail')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-                child: ElevatedButton(
-                    onPressed: _getVideoThumbnail,
-                    child: Text('Get File Thumbnail'))),
+            ElevatedButton(
+                onPressed: _getVideoThumbnail,
+                child: const Text('Get File Thumbnail')),
             _buildThumbnail(),
           ],
         ),
@@ -62,7 +59,7 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
   Widget _buildThumbnail() {
     if (_thumbnailFile != null) {
       return Container(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Image(image: FileImage(_thumbnailFile!)),
       );
     }

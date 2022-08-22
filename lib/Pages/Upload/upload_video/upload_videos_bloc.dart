@@ -1,27 +1,19 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:flutter/material.dart';
 //import 'package:file_picker/file_picker.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:video_compress/video_compress.dart';
 import 'package:videoclubclimb/Pages/Upload/upload_video/upload_videos_event.dart';
 import 'package:videoclubclimb/Pages/Upload/upload_video/upload_videos_state.dart';
 import 'package:videoclubclimb/auth/form_submission_state.dart';
 
 import 'package:videoclubclimb/functions/native_functions.dart';
 
-
-
-
-import '../../../amplifyconfiguration.dart';
 import '../../../data_repo.dart';
-
-
 
 class UploadVideoBloc extends Bloc<UploadVideoEvent, UploadVideoState> {
   //FilePickerResult? _result;
@@ -47,7 +39,7 @@ class UploadVideoBloc extends Bloc<UploadVideoEvent, UploadVideoState> {
     ///Image
 
     on<ImageSelectedUploadEvent>(
-            (event, emit) => emit(state.copyWith(image: event.image)));
+        (event, emit) => emit(state.copyWith(image: event.image)));
 
     on<UploadVideoButtonClickedEvent>(_uploadFile);
   }
@@ -59,6 +51,7 @@ class UploadVideoBloc extends Bloc<UploadVideoEvent, UploadVideoState> {
       FilePickerUploadVideoButtonClickedEvent event,
       Emitter<UploadVideoState> emit) async {
     _videoFile = await mFilePicker(type: EFileType.video);
+
     if (_videoFile != null) {
       emit(state.copyWith(video: _videoFile!.path));
     }
@@ -71,22 +64,19 @@ class UploadVideoBloc extends Bloc<UploadVideoEvent, UploadVideoState> {
     _imageFile = await mFilePicker(type: EFileType.image);
 
     if (_imageFile != null) {
-      _imageFile = (await ImageCropper().cropImage(sourcePath: _imageFile!.path,
-
+      _imageFile = (await ImageCropper().cropImage(
+        sourcePath: _imageFile!.path,
         aspectRatioPresets: [
-
           CropAspectRatioPreset.square,
-
         ],
         androidUiSettings: const AndroidUiSettings(
-
-            cropFrameColor: Colors.orange,
-            activeControlsWidgetColor: Colors.orange,
-            toolbarTitle: 'Recortar',
-            toolbarColor: Colors.orange,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: true,
+          cropFrameColor: Colors.orange,
+          activeControlsWidgetColor: Colors.orange,
+          toolbarTitle: 'Recortar',
+          toolbarColor: Colors.orange,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: true,
         ),
       ));
       emit(state.copyWith(image: _imageFile!.path));
@@ -98,11 +88,29 @@ class UploadVideoBloc extends Bloc<UploadVideoEvent, UploadVideoState> {
     //TODO add category to the UI through navigation and access using event
 
     emit(state.copyWith(formSubmissionState: FormSubmitting()));
+    MediaInfo compressedVideo = await compressVideo(_videoFile!);
 
     await dataRepo.datastoreUploadFile(event.fileName, category, event.desc,
-        event.grado, _videoFile,_imageFile);
+        event.grado, compressedVideo.file, _imageFile);
 
     emit(state.copyWith(formSubmissionState: FormSubmissionSuccessful()));
-
   }
+}
+
+Future<MediaInfo> compressVideo(File videoFile) async {
+  final info = await compressMyVideo(videoFile);
+  return info;
+}
+
+Future compressMyVideo(File? file) async {
+  try {
+    await VideoCompress.setLogLevel(0);
+    return await VideoCompress.compressVideo(file!.path,
+        quality: VideoQuality.MediumQuality,
+        includeAudio: true,
+        deleteOrigin: false);
+  } catch (e) {
+    VideoCompress.cancelCompression();
+  }
+  return null;
 }

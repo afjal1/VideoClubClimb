@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:video_compress/video_compress.dart';
 import 'package:videoclubclimb/Media/Videos/videos_cubit.dart';
 import 'package:videoclubclimb/Pages/Upload/upload_video/upload_videos_bloc.dart';
 import 'package:videoclubclimb/Pages/Upload/upload_video/upload_videos_event.dart';
@@ -9,6 +11,8 @@ import 'package:videoclubclimb/Pages/Upload/upload_video/upload_videos_state.dar
 import 'package:videoclubclimb/auth/form_submission_state.dart';
 import 'package:videoclubclimb/common/kFunctions.dart';
 
+import '../../../functions/native_functions.dart';
+import '../../../progress_widget.dart';
 
 class UploadVideo extends StatefulWidget {
   const UploadVideo({Key? key}) : super(key: key);
@@ -26,6 +30,65 @@ class _UploadVideoState extends State<UploadVideo> {
   bool uploadValidVideo = false;
   bool uploadValidImage = false;
 
+  Uint8List? thumbnailBytes;
+
+  int? videoSize;
+  File? file;
+  MediaInfo? compressedVideoInfo;
+
+  _uploadVideo() async {
+    file = await mFilePicker(type: EFileType.video);
+    if (file == null) {
+      return;
+    }
+    _getVideoThumbnail(file);
+    compressVideo();
+
+    setState(() {});
+  }
+
+  _getVideoThumbnail(File? file) async {
+    _getVideoSize(file);
+
+    if (file != null) {
+      final thumbnailbytess = await VideoCompress.getByteThumbnail(file.path);
+      thumbnailBytes = thumbnailbytess;
+      setState(() {});
+    }
+  }
+
+  _getVideoSize(File? file) async {
+    final size = await file!.length();
+    videoSize = size;
+    setState(() {});
+  }
+
+  Future compressVideo() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Dialog(
+              child: ProgressDialogWidget(),
+            ));
+    final info = await compressMyVideo(file);
+    setState(() => compressedVideoInfo = info);
+    // ignore: use_build_context_synchronously
+    Navigator.of(context, rootNavigator: true).pop('dialog');
+  }
+
+  static Future<MediaInfo?> compressMyVideo(File? file) async {
+    try {
+      await VideoCompress.setLogLevel(0);
+      return await VideoCompress.compressVideo(file!.path,
+          quality: VideoQuality.MediumQuality,
+          includeAudio: true,
+          deleteOrigin: false);
+    } catch (e) {
+      VideoCompress.cancelCompression();
+    }
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -40,16 +103,14 @@ class _UploadVideoState extends State<UploadVideo> {
   @override
   void dispose() {
     _nameController.dispose();
-    // _gradoController.dispose();
-
     _descController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ScrollController _controller = ScrollController();
-   // bool indicator=true;
+    ScrollController controller = ScrollController();
+    // bool indicator=true;
 
     Size size = MediaQuery.of(context).size;
 
@@ -66,8 +127,7 @@ class _UploadVideoState extends State<UploadVideo> {
       child: Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('assets/bgdibujos.jpg'),
-                fit: BoxFit.cover)),
+                image: AssetImage('assets/bgdibujos.jpg'), fit: BoxFit.cover)),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -76,10 +136,10 @@ class _UploadVideoState extends State<UploadVideo> {
             leading: IconButton(
               icon: Icon(
                 Icons.arrow_back_ios_rounded,
-                size: MediaQuery.of(context).size.height*	0.0417,
+                size: MediaQuery.of(context).size.height * 0.0417,
               ),
               onPressed: () {
-                context.read<VideosCubit>().showMenuUploadVideos();
+                Navigator.pop(context);
               },
             ),
             title: Text(
@@ -90,8 +150,9 @@ class _UploadVideoState extends State<UploadVideo> {
                   fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
-            elevation: MediaQuery.of(context).size.height*	0.0067,
-            toolbarHeight: MediaQuery.of(context).size.height*	0.0941, //Tamaño de la toolbar
+            elevation: MediaQuery.of(context).size.height * 0.0067,
+            toolbarHeight: MediaQuery.of(context).size.height *
+                0.0941, //Tamaño de la toolbar
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(0),
@@ -99,13 +160,13 @@ class _UploadVideoState extends State<UploadVideo> {
             )),
           ),
           body: ListView(
-            controller: _controller,
+            controller: controller,
             children: [
               Container(
                 margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height*	0.0336,
-                    left: MediaQuery.of(context).size.width*	0.0694,
-                    right: MediaQuery.of(context).size.width*	0.0694),
+                    top: MediaQuery.of(context).size.height * 0.0336,
+                    left: MediaQuery.of(context).size.width * 0.0694,
+                    right: MediaQuery.of(context).size.width * 0.0694),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -121,12 +182,13 @@ class _UploadVideoState extends State<UploadVideo> {
                                 fontSize: size.width * 0.07125,
                                 foreground: Paint()
                                   ..style = PaintingStyle.stroke
-                                  ..strokeWidth = MediaQuery.of(context).size.width*	0.0027
+                                  ..strokeWidth =
+                                      MediaQuery.of(context).size.width * 0.0027
                                   ..color = Colors.white,
                               ),
                             ),
                             // Solid text as fill.
-                             Text(
+                            Text(
                               'Zone :',
                               style: TextStyle(
                                 fontSize: size.width * 0.07125,
@@ -136,7 +198,7 @@ class _UploadVideoState extends State<UploadVideo> {
                           ],
                         ),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width*	0.0056,
+                          width: MediaQuery.of(context).size.width * 0.0056,
                         ),
                         Stack(
                           children: <Widget>[
@@ -147,7 +209,8 @@ class _UploadVideoState extends State<UploadVideo> {
                                 fontSize: size.width * 0.07125,
                                 foreground: Paint()
                                   ..style = PaintingStyle.stroke
-                                  ..strokeWidth = MediaQuery.of(context).size.width*	0.0056
+                                  ..strokeWidth =
+                                      MediaQuery.of(context).size.width * 0.0056
                                   ..color = Colors.white,
                               ),
                             ),
@@ -168,22 +231,22 @@ class _UploadVideoState extends State<UploadVideo> {
                     context.watch<UploadVideoBloc>().state.image == ''
                         ? Container(
                             margin: EdgeInsets.only(
-                                top: MediaQuery.of(context).size.height*	0.0403
-                            ),
-                            height: MediaQuery.of(context).size.height*	0.1345,
-                            width: MediaQuery.of(context).size.width*	0.2778,
+                                top: MediaQuery.of(context).size.height *
+                                    0.0403),
+                            height: MediaQuery.of(context).size.height * 0.1345,
+                            width: MediaQuery.of(context).size.width * 0.2778,
                             decoration: BoxDecoration(
                                 color: Colors.orange,
                                 borderRadius: BorderRadius.circular(20)),
                           )
                         : Image.file(
                             File(context.watch<UploadVideoBloc>().state.image),
-                      height: MediaQuery.of(context).size.height*	0.1345,
-                      width: MediaQuery.of(context).size.width*	0.2778,
+                            height: MediaQuery.of(context).size.height * 0.1345,
+                            width: MediaQuery.of(context).size.width * 0.2778,
                           ),
 
                     SizedBox(
-                      height: MediaQuery.of(context).size.width*	0.0403,
+                      height: MediaQuery.of(context).size.width * 0.0403,
                     ),
 
                     TextField(
@@ -199,7 +262,7 @@ class _UploadVideoState extends State<UploadVideo> {
                     ),
 
                     SizedBox(
-                      height: MediaQuery.of(context).size.height*	0.0556,
+                      height: MediaQuery.of(context).size.height * 0.0556,
                     ),
 
                     TextField(
@@ -217,183 +280,241 @@ class _UploadVideoState extends State<UploadVideo> {
                     ),
 
                     SizedBox(
-                      height: MediaQuery.of(context).size.height*	0.0556,
+                      height: MediaQuery.of(context).size.height * 0.0556,
                     ),
 
                     context.watch<UploadVideoBloc>().state.formSubmissionState
                             is FormSubmitting
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.teal,
+                        ? Center(
+                            child: Column(
+                              children: const [
+                                LinearProgressIndicator(
+                                  color: Colors.teal,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  'Uploading...',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
                             ),
                           )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Column(
+                        : context
+                                .watch<UploadVideoBloc>()
+                                .state
+                                .formSubmissionState is FormSubmissionSuccessful
+                            ? Center(
+                                child: Column(
+                                  children: const [
+                                    Icon(
+                                      Icons.check,
+                                      color: Colors.teal,
+                                      size: 50,
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      'Uploaded',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      context.read<UploadVideoBloc>().add(
-                                            FilePickerUploadVideoButtonClickedEvent(),
-                                          );
-                                    },
-                                    child: const Text('Select Video'),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.orangeAccent,
+                                        ),
+                                        onPressed: () {
+                                          context.read<UploadVideoBloc>().add(
+                                                FilePickerUploadVideoButtonClickedEvent(),
+                                              );
+                                        },
+                                        child: const Text('Select Video'),
+                                      ),
+
+                                      ///select video
+
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.0278,
+                                      ),
+
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.orangeAccent,
+                                        ),
+                                        onPressed: () {
+                                          context.read<UploadVideoBloc>().add(
+                                                ImageFilePickerUploadVideoButtonClickedEvent(),
+                                              );
+                                        },
+                                        child: const Text('Select Image'),
+                                      ),
+
+                                      ///Select Image
+                                    ],
                                   ),
-
-                                  ///select video
-
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width*	0.0278,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.0556,
                                   ),
+                                  Column(
+                                    children: [
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.1667,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.0511,
+                                        child: DropdownButton<String>(
+                                          elevation: 16,
+                                          value: dropdownValue,
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              dropdownValue = newValue!;
 
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      context.read<UploadVideoBloc>().add(
-                                            ImageFilePickerUploadVideoButtonClickedEvent(),
-                                          );
-                                    },
-                                    child: const Text('Select Image'),
-                                  ),
+                                              if (newValue == '4') {
+                                                gradoIndex = 0;
+                                              } else if (newValue == '5') {
+                                                gradoIndex = 1;
+                                              } else if (newValue == '5+') {
+                                                gradoIndex = 2;
+                                              } else if (newValue == '6a') {
+                                                gradoIndex = 3;
+                                              } else if (newValue == '6a+') {
+                                                gradoIndex = 4;
+                                              } else if (newValue == '6b') {
+                                                gradoIndex = 5;
+                                              } else if (newValue == '6b+') {
+                                                gradoIndex = 6;
+                                              } else if (newValue == '6c') {
+                                                gradoIndex = 7;
+                                              } else if (newValue == '6c+') {
+                                                gradoIndex = 8;
+                                              } else if (newValue == '7a') {
+                                                gradoIndex = 9;
+                                              } else if (newValue == '7a+') {
+                                                gradoIndex = 10;
+                                              } else if (newValue == '7b') {
+                                                gradoIndex = 11;
+                                              } else if (newValue == '7b+') {
+                                                gradoIndex = 12;
+                                              }
+                                            });
+                                          },
+                                          items: <String>[
+                                            '4',
+                                            '5',
+                                            '5+',
+                                            '6a',
+                                            '6a+',
+                                            '6b',
+                                            '6b+',
+                                            '6c',
+                                            '6c+',
+                                            '7a',
+                                            '7a+',
+                                            '7b',
+                                            '7b+'
+                                          ].map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
 
-                                  ///Select Image
-                                ],
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width*	0.0556,
-                              ),
-                              Column(
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width*	0.1667,
-                                    height: MediaQuery.of(context).size.height*	0.0511,
-                                    child: DropdownButton<String>(
-                                      elevation: 16,
-                                      value: dropdownValue,
-                                      onChanged: (String? newValue) {
-                                        setState(() {
-                                          dropdownValue = newValue!;
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
 
-                                          if (newValue == '4') {
-                                            gradoIndex = 0;
-                                          } else if (newValue == '5') {
-                                            gradoIndex = 1;
-                                          } else if (newValue == '5+') {
-                                            gradoIndex = 2;
-                                          } else if (newValue == '6a') {
-                                            gradoIndex = 3;
-                                          } else if (newValue == '6a+') {
-                                            gradoIndex = 4;
-                                          } else if (newValue == '6b') {
-                                            gradoIndex = 5;
-                                          } else if (newValue == '6b+') {
-                                            gradoIndex = 6;
-                                          } else if (newValue == '6c') {
-                                            gradoIndex = 7;
-                                          } else if (newValue == '6c+') {
-                                            gradoIndex = 8;
-                                          } else if (newValue == '7a') {
-                                            gradoIndex = 9;
-                                          } else if (newValue == '7a+') {
-                                            gradoIndex = 10;
-                                          } else if (newValue == '7b') {
-                                            gradoIndex = 11;
-                                          } else if (newValue == '7b+') {
-                                            gradoIndex = 12;
-                                          }
-                                        });
-                                      },
-                                      items: <String>[
-                                        '4',
-                                        '5',
-                                        '5+',
-                                        '6a',
-                                        '6a+',
-                                        '6b',
-                                        '6b+',
-                                        '6c',
-                                        '6c+',
-                                        '7a',
-                                        '7a+',
-                                        '7b',
-                                        '7b+'
-                                      ].map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
+                                      BlocBuilder<UploadVideoBloc,
+                                          UploadVideoState>(
+                                        builder: (context, state) {
+                                          return ElevatedButton(
+                                            onPressed: state.image.isEmpty ||
+                                                    state.video.isEmpty ||
+                                                    _nameController.text
+                                                        .trim()
+                                                        .isEmpty ||
+                                                    _descController.text
+                                                        .trim()
+                                                        .isEmpty
+                                                ? null
+                                                : () {
+                                                    showSnackBar(
+                                                      context,
+                                                      text:
+                                                          'Uploading video, please wait...',
+                                                    );
 
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
+                                                    context
+                                                        .read<UploadVideoBloc>()
+                                                        .add(
+                                                          UploadVideoButtonClickedEvent(
+                                                              fileName:
+                                                                  _nameController
+                                                                      .text,
+                                                              grado: gradoIndex,
+                                                              desc:
+                                                                  _descController
+                                                                      .text,
+                                                              category: ''),
+                                                        );
 
-                                  BlocBuilder<UploadVideoBloc,
-                                      UploadVideoState>(
-                                    builder: (context, state) {
-                                      return ElevatedButton(
-                                        onPressed: state.image.isEmpty ||
-                                            state.video.isEmpty ||
-                                            _nameController.text
-                                                .trim()
-                                                .isEmpty ||
-                                            _descController.text
-                                                .trim()
-                                                .isEmpty
-                                            ? null
-                                            : () {
-                                          showSnackBar(
-                                            context,
-                                            text:
-                                            'Uploading video, please wait...',
-                                          );
-
-                                          context
-                                              .read<UploadVideoBloc>()
-                                              .add(
-                                            UploadVideoButtonClickedEvent(
-                                                fileName:
-                                                _nameController
-                                                    .text,
-                                                grado: gradoIndex,
-                                                desc: _descController
-                                                    .text,
-                                                category: ''),
-                                          );
-                                          showSnackBar(
-                                            context,
-                                            text: 'Uploaded Video',
+                                                    // if (context
+                                                    //         .watch<UploadVideoBloc>()
+                                                    //         .state
+                                                    //         .formSubmissionState
+                                                    //     is FormSubmissionSuccessful) {
+                                                    //   showSnackBar(
+                                                    //     context,
+                                                    //     text: 'Uploaded Video',
+                                                    //   );
+                                                    // }
+                                                  },
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                state.image.isEmpty ||
+                                                        state.video.isEmpty ||
+                                                        _nameController.text
+                                                            .trim()
+                                                            .isEmpty ||
+                                                        _descController.text
+                                                            .trim()
+                                                            .isEmpty
+                                                    ? Colors.grey
+                                                    : Colors.orange,
+                                              ),
+                                            ),
+                                            child: const Text('Upload Video'),
                                           );
                                         },
-                                        child: const Text('Upload Video'),
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                          MaterialStateProperty.all(
-                                            state.image.isEmpty ||
-                                                state.video.isEmpty ||
-                                                _nameController.text
-                                                    .trim()
-                                                    .isEmpty ||
-                                                _descController.text
-                                                    .trim()
-                                                    .isEmpty
-                                                ? Colors.grey
-                                                : Colors.orange,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                      ),
 
-                                  ///Upload video
+                                      ///Upload video
+                                    ],
+                                  ),
                                 ],
                               ),
-                            ],
-                          ),
 
                     ///Botons
                   ],

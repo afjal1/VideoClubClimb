@@ -8,24 +8,26 @@ import '../../../data_repo.dart';
 import 'my_videos_event.dart';
 import 'my_videos_state.dart';
 
-final List<File> item = [File(
-    name: "null",
-    type: FileType.PHOTOS,
-    category: "null",
-    description: " null",
-    ownerID: "null",
-    grade: 1020,
-    s3key: "null",
-    picsS3key: "null")];
+final List<File> item = [
+  File(
+      name: "null",
+      type: FileType.PHOTOS,
+      category: "null",
+      description: " null",
+      ownerID: "null",
+      grade: 1020,
+      s3key: "null",
+      picsS3key: "null")
+];
 
-
-class MyVideosBloc extends Bloc<MyVideosEvent, MyVideosState>{
-
+class MyVideosBloc extends Bloc<MyVideosEvent, MyVideosState> {
   DataRepo dataRepo;
   AuthRepo authRepo;
   String category = "";
 
-  MyVideosBloc({required this.dataRepo, required this.category, required this.authRepo}) : super(MyVideosState(items: item,urls: [], categories: category)){
+  MyVideosBloc(
+      {required this.dataRepo, required this.category, required this.authRepo})
+      : super(MyVideosState(items: item, urls: [], categories: category)) {
     on<DeleteVideoButtonClickedEvent>(_onDeleteVideoButtonClickedEvent);
     on<VideoPlayButtonClickedEvent>(_playVideo);
     on<LoadMyVideosEvent>(_load);
@@ -36,48 +38,35 @@ class MyVideosBloc extends Bloc<MyVideosEvent, MyVideosState>{
     // on<GetMyVideosEventGRADO>(_getMyVideoEventGRADO);
   }
 
-  FutureOr<void> _onDeleteVideoButtonClickedEvent(DeleteVideoButtonClickedEvent event,
-      Emitter<MyVideosState> emit) async {
-
+  FutureOr<void> _onDeleteVideoButtonClickedEvent(
+      DeleteVideoButtonClickedEvent event, Emitter<MyVideosState> emit) async {
     dataRepo.deleteFile(state.items.elementAt(event.index));
 
     emit(state.copyWith());
-
-
-
   }
 
-  Future<void> _playVideo(VideoPlayButtonClickedEvent event, Emitter<MyVideosState> emit)
-  async {
+  Future<void> _playVideo(
+      VideoPlayButtonClickedEvent event, Emitter<MyVideosState> emit) async {}
 
-  }
-
-  Future<void> _load(LoadMyVideosEvent event, Emitter<MyVideosState> emit)
-  async{
-    print("LOADING");
-
-    String id= await authRepo.getUserIDFromAttributes();
-    List<File> items=await dataRepo.listMyFilesByCategory(id,category);
-    List<String> urls=[];
-    for(int index=0;index<items.length;index++)
-      {
-        urls.add(await dataRepo.getPhotoLink(items.elementAt(index)));
-      }
+  Future<void> _load(
+      LoadMyVideosEvent event, Emitter<MyVideosState> emit) async {
+    emit(MyVideoFormSubmitting(items: [], categories: '', urls: []));
+    String id = await authRepo.getUserIDFromAttributes();
+    List<File> items = await dataRepo.listMyFilesByCategory(id, category);
+    List<String> urls = [];
+    for (int index = 0; index < items.length; index++) {
+      urls.add(await dataRepo.getPhotoLink(items.elementAt(index)));
+    }
 
     state.items.clear();
     emit(state.copyWith(items: items, urls: urls));
-
   }
 
-  Future<void> _deleteAll(DeleteEverythingEvent event, Emitter<MyVideosState> emit)
-  async{
-    print("Deleting");
-    String id=await authRepo.getUserIDFromAttributes();
-    print("Deleting");
+  Future<void> _deleteAll(
+      DeleteEverythingEvent event, Emitter<MyVideosState> emit) async {
+    String id = await authRepo.getUserIDFromAttributes();
     await dataRepo.deleteCategory(category, id);
-
   }
-
 
   //
   // FutureOr<void> _getMyVideos(GetMyVideosEvent event, Emitter<MyVideosState> emit) async {
@@ -128,4 +117,3 @@ class MyVideosBloc extends Bloc<MyVideosEvent, MyVideosState>{
   // }
 
 }
-

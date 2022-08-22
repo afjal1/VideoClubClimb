@@ -1,12 +1,15 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:videoclubclimb/Media/Videos/videos_cubit.dart';
-
+import 'package:videoclubclimb/Pages/My_videos/my_videos_menu/my_videos_menu_bloc.dart';
+import 'package:videoclubclimb/Pages/My_videos/my_videos_menu/my_videos_menu_ui.dart';
+import 'package:videoclubclimb/Pages/Upload/upload_menu/upload_video_menu_ui.dart';
+import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_ui.dart';
+import '../../Media/Videos/video_state.dart';
 import '../../compress_video.dart';
-import 'homepage_bloc.dart';
-import 'homepage_event.dart';
-import 'homepage_state.dart';
+import '../../data_repo.dart';
+import '../Upload/upload_menu/upload_video_menu_bloc.dart';
+import '../Zone/zone_menu/zone_menu_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,7 +22,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    context.read<HomepageBloc>().add(GetHomepageEvent());
   }
 
   @override
@@ -27,64 +29,63 @@ class _HomePageState extends State<HomePage> {
     Size size = MediaQuery.of(context).size;
 
     return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/bgdibujos.jpg'), fit: BoxFit.cover)),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.orangeAccent,
-          iconTheme: IconThemeData(color: Colors.white),
-          title: Text(
-            "Gravetat Zero",
-            style: TextStyle(
-                fontSize: size.width * 0.07125,
-                color: Colors.white,
-                fontWeight: FontWeight.bold),
-          ),
-          centerTitle: true,
-          elevation: MediaQuery.of(context).size.height * 0.0067,
-          toolbarHeight: MediaQuery.of(context).size.height * 0.0941,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(0),
-            bottomRight: Radius.circular(50),
-          )),
-        ),
-
-        body: BlocBuilder<HomepageBloc, HomepageState>(
-          builder: (BuildContext context, state) {
-            return Center(
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/bgdibujos.jpg'), fit: BoxFit.cover)),
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.orangeAccent,
+              iconTheme: const IconThemeData(color: Colors.white),
+              title: Text(
+                "Gravetat Zero",
+                style: TextStyle(
+                    fontSize: size.width * 0.07125,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
+              centerTitle: true,
+              elevation: MediaQuery.of(context).size.height * 0.0067,
+              toolbarHeight: MediaQuery.of(context).size.height * 0.0941,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(0),
+                bottomRight: Radius.circular(50),
+              )),
+            ),
+            body: Center(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                   Card(
-                    elevation: MediaQuery.of(context).size.height*	0.0134,
+                    elevation: MediaQuery.of(context).size.height * 0.0134,
                     color: Colors.transparent,
                     margin: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height*	0.0134,
+                        vertical: MediaQuery.of(context).size.height * 0.0134,
                         horizontal: MediaQuery.of(context).size.width * 0.0556),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       side: BorderSide(
                         color: Colors.orange,
-                        width: MediaQuery.of(context).size.width*	0.0056,
+                        width: MediaQuery.of(context).size.width * 0.0056,
                       ),
                     ),
                     child: GestureDetector(
-                      onTap: () async {// final updatedItem = File(
-                        //     Name: "Lorem ipsum dolor sit amet",
-                        //     Type: FileType.VIDEO,
-                        //     category: "Lorem ipsum dolor sit amet",
-                        //     description: "Lorem ipsum dolor sit amet",
-                        //     ownerID: "Lorem ipsum dolor sit amet",
-                        //     Grade: 1020);
-                        // await Amplify.DataStore.save(updatedItem);
-                        context.read<VideosCubit>().showZoneMenu();
+                      onTap: () async {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                  create: (BuildContext context) =>
+                                      ZoneMenuBloc(
+                                          dataRepo: context.read<DataRepo>()),
+                                  child: const ZoneMenu()),
+                            ));
                       },
                       child: Container(
                           padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.height*	0.0134,
+                            MediaQuery.of(context).size.height * 0.0134,
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
@@ -101,12 +102,15 @@ class _HomePageState extends State<HomePage> {
                           child: Row(
                             children: [
                               Container(
-                                height: MediaQuery.of(context).size.height*	0.0672,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.0672,
                                 margin: EdgeInsets.only(
-                                  right: MediaQuery.of(context).size.width * 0.0556,
-                                  left: MediaQuery.of(context).size.width*	0.0139,
+                                  right: MediaQuery.of(context).size.width *
+                                      0.0556,
+                                  left: MediaQuery.of(context).size.width *
+                                      0.0139,
                                 ),
-                                child: Image(
+                                child: const Image(
                                   image: AssetImage('assets/glogo.png'),
                                 ),
                               ),
@@ -116,119 +120,139 @@ class _HomePageState extends State<HomePage> {
                                   fontSize: size.width * 0.06555,
                                 ),
                               ),
-
-                              Expanded(child: SizedBox()),
-
+                              const Expanded(child: SizedBox()),
                               Icon(
                                 Icons.play_arrow_outlined,
-                                size: MediaQuery.of(context).size.width*	0.1111,
+                                size:
+                                    MediaQuery.of(context).size.width * 0.1111,
                                 color: Colors.orange,
                               ),
-
                               SizedBox(
-                                width: MediaQuery.of(context).size.width*	0.0278,
+                                width:
+                                    MediaQuery.of(context).size.width * 0.0278,
                               )
                             ],
                           ) //declare your widget here
                           ),
                     ),
-                  ),///Zone Climb
+                  ),
+
+                  ///Zone Climb
 
                   SizedBox(
-                    height: MediaQuery.of(context).size.height*	0.0336,
+                    height: MediaQuery.of(context).size.height * 0.0336,
                   ),
 
                   Card(
-                    elevation: MediaQuery.of(context).size.height*	0.0134,
+                    elevation: MediaQuery.of(context).size.height * 0.0134,
                     color: Colors.transparent,
                     margin: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height*	0.0134,
+                        vertical: MediaQuery.of(context).size.height * 0.0134,
                         horizontal: MediaQuery.of(context).size.width * 0.0556),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       // if you need this
                       side: BorderSide(
                         color: Colors.orange,
-                        width: MediaQuery.of(context).size.width*	0.0056,
+                        width: MediaQuery.of(context).size.width * 0.0056,
                       ),
                     ),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        context.read<VideosCubit>().showMyVideosMenu();
-                      },
-                      child: Container(
-                          padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.height*	0.0134,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.yellow,
-                                Colors.orangeAccent,
-                                Colors.yellow.shade300,
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                    child: BlocBuilder<VideosCubit, VideoState>(
+                        builder: (context, state) {
+                      return GestureDetector(
+                        onTap: () {
+                          //use this way to navigate to another page it will not destroy the current page
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BlocProvider(
+                                    create: (BuildContext context) =>
+                                        MyVideosMenuBloc(
+                                            dataRepo: context.read<DataRepo>()),
+                                    child: const MyVideosMenu()),
+                              ));
+                          //  context.read<VideosCubit>().showMyVideosMenu();
+                        },
+                        child: Container(
+                            padding: EdgeInsets.all(
+                              MediaQuery.of(context).size.height * 0.0134,
                             ),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                height: MediaQuery.of(context).size.height*	0.0672,
-                                margin: EdgeInsets.only(
-                                  right: MediaQuery.of(context).size.width * 0.0556,
-                                  left: MediaQuery.of(context).size.width*	0.0139,
-                                ),
-                                child: Image(
-                                  image: AssetImage('assets/glogo.png'),
-                                ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.yellow,
+                                  Colors.orangeAccent,
+                                  Colors.yellow.shade300,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
-                              Text(
-                                'My videos',
-                                style: TextStyle(
-                                  fontSize: size.width * 0.06555,
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.0672,
+                                  margin: EdgeInsets.only(
+                                    right: MediaQuery.of(context).size.width *
+                                        0.0556,
+                                    left: MediaQuery.of(context).size.width *
+                                        0.0139,
+                                  ),
+                                  child: const Image(
+                                    image: AssetImage('assets/glogo.png'),
+                                  ),
                                 ),
-                              ),
-                              Expanded(child: SizedBox()),
-                              Icon(
-                                Icons.play_arrow_outlined,
-                                size: MediaQuery.of(context).size.width*	0.1111,
-                                color: Colors.orange,
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width*	0.0278,
-                              )
-                            ],
-                          ) //declare your widget here
-                          ),
-                    ),
-                  ),///My videos
+                                Text(
+                                  'My videos',
+                                  style: TextStyle(
+                                    fontSize: size.width * 0.06555,
+                                  ),
+                                ),
+                                const Expanded(child: SizedBox()),
+                                Icon(
+                                  Icons.play_arrow_outlined,
+                                  size: MediaQuery.of(context).size.width *
+                                      0.1111,
+                                  color: Colors.orange,
+                                ),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width *
+                                      0.0278,
+                                )
+                              ],
+                            ) //declare your widget here
+                            ),
+                      );
+                    }),
+                  ),
 
-                  SizedBox(
+                  ///My videos
+
+                  const SizedBox(
                     height: 25,
                   ),
 
                   Card(
-                    elevation: MediaQuery.of(context).size.height*	0.0134,
+                    elevation: MediaQuery.of(context).size.height * 0.0134,
                     color: Colors.transparent,
                     margin: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height*	0.0134,
+                        vertical: MediaQuery.of(context).size.height * 0.0134,
                         horizontal: MediaQuery.of(context).size.width * 0.0556),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       // if you need this
                       side: BorderSide(
                         color: Colors.orange,
-                        width: MediaQuery.of(context).size.width*	0.0056,
+                        width: MediaQuery.of(context).size.width * 0.0056,
                       ),
                     ),
                     child: GestureDetector(
                       onTap: () {},
                       child: Container(
                           padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.height*	0.0134,
+                            MediaQuery.of(context).size.height * 0.0134,
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
@@ -245,12 +269,15 @@ class _HomePageState extends State<HomePage> {
                           child: Row(
                             children: [
                               Container(
-                                height: MediaQuery.of(context).size.height*	0.0672,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.0672,
                                 margin: EdgeInsets.only(
-                                  right: MediaQuery.of(context).size.width * 0.0556,
-                                  left: MediaQuery.of(context).size.width*	0.0139,
+                                  right: MediaQuery.of(context).size.width *
+                                      0.0556,
+                                  left: MediaQuery.of(context).size.width *
+                                      0.0139,
                                 ),
-                                child: Image(
+                                child: const Image(
                                   image: AssetImage('assets/glogo.png'),
                                 ),
                               ),
@@ -260,46 +287,60 @@ class _HomePageState extends State<HomePage> {
                                   fontSize: size.width * 0.06555,
                                 ),
                               ),
-                              Expanded(child: SizedBox()),
+                              const Expanded(child: SizedBox()),
                               Icon(
                                 Icons.play_arrow_outlined,
-                                size: MediaQuery.of(context).size.width*	0.1111,
+                                size:
+                                    MediaQuery.of(context).size.width * 0.1111,
                                 color: Colors.orange,
                               ),
                               SizedBox(
-                                width: MediaQuery.of(context).size.width*	0.0278,
+                                width:
+                                    MediaQuery.of(context).size.width * 0.0278,
                               )
                             ],
                           ) //declare your widget here
                           ),
                     ),
-                  ),///Training
+                  ),
 
-                  SizedBox(
+                  ///Training
+
+                  const SizedBox(
                     height: 25,
                   ),
 
                   Card(
-                    elevation: MediaQuery.of(context).size.height*	0.0134,
+                    elevation: MediaQuery.of(context).size.height * 0.0134,
                     color: Colors.transparent,
                     margin: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height*	0.0134,
+                        vertical: MediaQuery.of(context).size.height * 0.0134,
                         horizontal: MediaQuery.of(context).size.width * 0.0556),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       // if you need this
                       side: BorderSide(
                         color: Colors.orange,
-                        width: MediaQuery.of(context).size.width*	0.0056,
+                        width: MediaQuery.of(context).size.width * 0.0056,
                       ),
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        context.read<VideosCubit>().showMenuUploadVideos();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                create: (BuildContext context) =>
+                                    UploadVideoMenuBloc(
+                                  dataRepo: context.read<DataRepo>(),
+                                ),
+                                child: const UploadVideoMenu(),
+                              ),
+                            ));
                       },
                       child: Container(
                           padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.height*	0.0134,
+                            MediaQuery.of(context).size.height * 0.0134,
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white60,
@@ -308,12 +349,15 @@ class _HomePageState extends State<HomePage> {
                           child: Row(
                             children: [
                               Container(
-                                height: MediaQuery.of(context).size.height*	0.0672,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.0672,
                                 margin: EdgeInsets.only(
-                                  right: MediaQuery.of(context).size.width * 0.0556,
-                                  left: MediaQuery.of(context).size.width*	0.0139,
+                                  right: MediaQuery.of(context).size.width *
+                                      0.0556,
+                                  left: MediaQuery.of(context).size.width *
+                                      0.0139,
                                 ),
-                                child: Image(
+                                child: const Image(
                                   image: AssetImage('assets/glogo.png'),
                                 ),
                               ),
@@ -323,37 +367,41 @@ class _HomePageState extends State<HomePage> {
                                   fontSize: size.width * 0.06555,
                                 ),
                               ),
-                              Expanded(child: SizedBox()),
+                              const Expanded(child: SizedBox()),
                               Icon(
                                 Icons.play_arrow_outlined,
-                                size: MediaQuery.of(context).size.width*	0.1111,
+                                size:
+                                    MediaQuery.of(context).size.width * 0.1111,
                                 color: Colors.orange,
                               ),
                               SizedBox(
-                                width: MediaQuery.of(context).size.width*	0.0278,
+                                width:
+                                    MediaQuery.of(context).size.width * 0.0278,
                               )
                             ],
                           ) //declare your widget here
-                      ),
+                          ),
                     ),
-                  ),///Upload Video
+                  ),
 
-                  SizedBox(
+                  ///Upload Video
+
+                  const SizedBox(
                     height: 25,
                   ),
 
                   Card(
-                    elevation: MediaQuery.of(context).size.height*	0.0134,
+                    elevation: MediaQuery.of(context).size.height * 0.0134,
                     color: Colors.red,
                     margin: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height*	0.0134,
+                        vertical: MediaQuery.of(context).size.height * 0.0134,
                         horizontal: MediaQuery.of(context).size.width * 0.0556),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       // if you need this
                       side: BorderSide(
                         color: Colors.orange,
-                        width: MediaQuery.of(context).size.width*	0.0056,
+                        width: MediaQuery.of(context).size.width * 0.0056,
                       ),
                     ),
                     child: GestureDetector(
@@ -361,11 +409,11 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MyHomePage2()));
+                                builder: (context) => const MyHomePage2()));
                       },
                       child: Container(
                           padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.height*	0.0134,
+                            MediaQuery.of(context).size.height * 0.0134,
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white60,
@@ -374,10 +422,13 @@ class _HomePageState extends State<HomePage> {
                           child: Row(
                             children: [
                               Container(
-                                height: MediaQuery.of(context).size.height*	0.0672,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.0672,
                                 margin: EdgeInsets.only(
-                                  right: MediaQuery.of(context).size.width * 0.0556,
-                                  left: MediaQuery.of(context).size.width*	0.0139,
+                                  right: MediaQuery.of(context).size.width *
+                                      0.0556,
+                                  left: MediaQuery.of(context).size.width *
+                                      0.0139,
                                 ),
                                 child: const Image(
                                   image: AssetImage('assets/glogo.png'),
@@ -392,26 +443,24 @@ class _HomePageState extends State<HomePage> {
                               const Expanded(child: SizedBox()),
                               Icon(
                                 Icons.play_arrow_outlined,
-                                size: MediaQuery.of(context).size.width*	0.1111,
+                                size: MediaQuery.of(context).size.width * 0.1,
                                 color: Colors.orange,
                               ),
                               SizedBox(
-                                width: MediaQuery.of(context).size.width*	0.0278,
+                                width:
+                                    MediaQuery.of(context).size.width * 0.0278,
                               )
                             ],
                           ) //declare your widget here
                           ),
                     ),
-                  ),  ///COMPRESS
+                  ),
+
+                  ///COMPRESS
 
                   SizedBox(
-                    height: MediaQuery.of(context).size.width*	0.1111,
+                    height: MediaQuery.of(context).size.width * 0.1111,
                   ),
-                ])
-            );
-          },
-        ),
-      ),
-    );
+                ]))));
   }
 }

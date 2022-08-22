@@ -1,4 +1,3 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../session_cubit.dart';
@@ -25,7 +24,8 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthState.confirmSignup);
   }
 
-  showSession(AuthCredentials authCredentials) => sessionCubit.showSession(authCredentials);
+  showSession(AuthCredentials authCredentials) =>
+      sessionCubit.showSession(authCredentials);
 
   void showForgot() => emit(AuthState.forgot);
   void showConfirmationForgot({
@@ -38,5 +38,4 @@ class AuthCubit extends Cubit<AuthState> {
     );
     emit(AuthState.confirmForgot);
   }
-
 }

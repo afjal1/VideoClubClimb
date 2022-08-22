@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:videoclubclimb/Media/Videos/videos_cubit.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_bloc.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_event.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_state.dart';
-import 'package:videoclubclimb/auth/form_submission_state.dart';
+
+import '../../../data_repo.dart';
+import '../zone_videos/zone_videos_bloc.dart';
+import '../zone_videos/zone_videos_ui.dart';
+
+Color shimmer_base = Colors.grey.shade200;
+
+Color shimmer_highlighted = Colors.grey.shade500;
 
 class ZoneMenu extends StatefulWidget {
   const ZoneMenu({Key? key}) : super(key: key);
@@ -29,19 +37,19 @@ class _ZoneMenuState extends State<ZoneMenu> {
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('assets/bgdibujos.jpg'),
-              fit: BoxFit.cover)),
+              image: AssetImage('assets/bgdibujos.jpg'), fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.orangeAccent,
           iconTheme: const IconThemeData(color: Colors.white),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_rounded,
-              size: MediaQuery.of(context).size.height*	0.0417,
+            icon: Icon(
+              Icons.arrow_back_ios_rounded,
+              size: size.height * 0.0417,
             ),
             onPressed: () {
-              context.read<VideosCubit>().showInicio();
+              Navigator.pop(context);
             },
           ),
           title: Text(
@@ -56,19 +64,19 @@ class _ZoneMenuState extends State<ZoneMenu> {
               icon: Icon(
                 Icons.delete_forever,
                 color: Colors.red,
-                size: MediaQuery.of(context).size.height*	0.0538,
+                size: size.height * 0.0538,
               ),
-              onPressed: ()  {
+              onPressed: () {
                 showCustomDialog(context);
               },
             ),
             SizedBox(
-              width: MediaQuery.of(context).size.height*	0.0134,
+              width: size.height * 0.0134,
             ),
           ],
           centerTitle: true,
-          elevation: MediaQuery.of(context).size.height*	0.0067,
-          toolbarHeight: MediaQuery.of(context).size.height*	0.0941, //Tamaño de la toolbar
+          elevation: size.height * 0.0067,
+          toolbarHeight: size.height * 0.0941, //Tamaño de la toolbar
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(0),
@@ -77,23 +85,21 @@ class _ZoneMenuState extends State<ZoneMenu> {
         ),
         body: BlocBuilder<ZoneMenuBloc, ZoneMenuState>(
           builder: (BuildContext context, state) {
-            return (context.watch<ZoneMenuBloc>().state.formSubmissionState
-                        is FormSubmitting ||
-                    context.watch<ZoneMenuBloc>().state.deleting == true)
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.teal,
-                    ),
-                  )
+            if ((state is ZoneMenuFormSubmitting ||
+                context.watch<ZoneMenuBloc>().state.deleting == true)) {
+              return shimmerEffect(size);
+            }
+            return state.totalCategories == 0
+                ? const Center(child: Text('No hay categorias'))
                 : ListView.builder(
                     shrinkWrap: true,
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height*	0.0403),
+                    padding: EdgeInsets.only(top: size.height * 0.0403),
                     itemCount: state.totalCategories,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).size.height * 0.0269), //entre sector y sector
+                            bottom:
+                                size.height * 0.0269), //entre sector y sector
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -116,17 +122,26 @@ class _ZoneMenuState extends State<ZoneMenu> {
                                       .read<ZoneMenuBloc>()
                                       .state
                                       .categories[index];
-                                  context
-                                      .read<VideosCubit>()
-                                      .showZoneVideos(category, index);
+
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => BlocProvider(
+                                          create: (BuildContext context) =>
+                                              ZoneVideosBloc(
+                                            dataRepo: context.read<DataRepo>(),
+                                            category: category,
+                                          ),
+                                          child: const ZoneVideo(),
+                                        ),
+                                      ));
                                 },
                                 child: Card(
-                                  elevation: MediaQuery.of(context).size.height*	0.0134,
+                                  elevation: size.height * 0.0134,
                                   color: Colors.orange.shade50,
                                   margin: EdgeInsets.symmetric(
-                                      vertical: MediaQuery.of(context).size.height*	0.0067,
-                                      horizontal: MediaQuery.of(context).size.width*	0.0833
-                                  ),
+                                      vertical: size.height * 0.0067,
+                                      horizontal: size.width * 0.0833),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
                                     // if you need this
@@ -135,35 +150,45 @@ class _ZoneMenuState extends State<ZoneMenu> {
                                       width: size.width * 0.0056,
                                     ),
                                   ),
-
                                   child: Row(
                                     children: [
-                                      Container( height: MediaQuery.of(context).size.height*	0.0672,
+                                      Container(
+                                        height: size.height * 0.0672,
                                         margin: EdgeInsets.only(
-                                            right: MediaQuery.of(context).size.width*	0.0556,
-                                            left: MediaQuery.of(context).size.width*	0.0278,
-                                            bottom: MediaQuery.of(context).size.height*	0.0134,
-                                            top: MediaQuery.of(context).size.height*	0.0134),
+                                            right: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.0556,
+                                            left: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.0278,
+                                            bottom: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.0134,
+                                            top: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.0134),
                                         child: const Image(
                                           image: AssetImage('assets/glogo.png'),
                                         ),
                                       ),
                                       Text(
                                         state.categories[index],
-
                                         style: TextStyle(
                                             fontSize: size.width * 0.0684),
                                       ),
-
                                       const Expanded(child: SizedBox()),
-
-                                      Icon (Icons.play_arrow_outlined,
+                                      Icon(
+                                        Icons.play_arrow_outlined,
                                         size: size.height * 0.0538,
                                         color: Colors.orange,
                                       ),
-
-                                      SizedBox(width: size.width * 0.0278,)
-
+                                      SizedBox(
+                                        width: size.width * 0.0278,
+                                      )
                                     ],
                                   ),
                                 )),
@@ -177,40 +202,35 @@ class _ZoneMenuState extends State<ZoneMenu> {
       ),
     );
   }
+
   void showCustomDialog(BuildContext context) {
     showGeneralDialog(
-
       context: context,
       barrierLabel: "Barrier",
       barrierDismissible: true,
       barrierColor: Colors.black.withOpacity(0.5),
-
       transitionDuration: const Duration(milliseconds: 700),
       pageBuilder: (_, __, ___) {
         Size size = MediaQuery.of(context).size;
 
         return Center(
           child: Container(
-            height: MediaQuery.of(context).size.height* 0.366,
-            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width* 0.0556),
+            height: size.height * 0.366,
+            margin: EdgeInsets.symmetric(horizontal: size.width * 0.0556),
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                  color: Colors.orange,
-                  width: MediaQuery.of(context).size.width* 0.03362
-              ),
+              border:
+                  Border.all(color: Colors.orange, width: size.width * 0.03362),
             ),
-
             child: Scaffold(
-
               body: Column(
                 children: [
                   Container(
                     margin: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height* 0.0336,
-                        horizontal: MediaQuery.of(context).size.width* 0.0278),
+                        vertical: size.height * 0.0336,
+                        horizontal: size.width * 0.0278),
                     child: Text(
                       "Seguro que quieres borrar TODOS LOS VIDEOS de la base?",
                       style: TextStyle(
@@ -220,9 +240,8 @@ class _ZoneMenuState extends State<ZoneMenu> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-
                   Container(
-                    margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height* 0.0134),
+                    margin: EdgeInsets.only(bottom: size.height * 0.0134),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -231,73 +250,74 @@ class _ZoneMenuState extends State<ZoneMenu> {
                             padding: EdgeInsets.zero,
                           ),
                           onPressed: () async {
-                            context.read<ZoneMenuBloc>().add(DeleteEverything());
-                            Navigator.of(context, rootNavigator: true).pop(true);
+                            context
+                                .read<ZoneMenuBloc>()
+                                .add(DeleteEverything());
+                            Navigator.of(context, rootNavigator: true)
+                                .pop(true);
                             context.read<VideosCubit>().showZoneMenu();
                           },
                           child: Container(
-                            width: MediaQuery.of(context).size.width* 0.2083,
+                            width: size.width * 0.2083,
                             decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.pink.withOpacity(0.5),
                                     spreadRadius: 4,
                                     blurRadius: 10,
-                                    offset: Offset(0, 3),
+                                    offset: const Offset(0, 3),
                                   )
                                 ],
                                 color: Colors.red,
                                 border: Border.all(
                                   color: const Color(0x60FF0000),
                                 ),
-                                borderRadius: BorderRadius.circular(5)
-                            ),
-
-                            child:  Center(
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Center(
                                 child: Text(
-                                  "SI",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: size.width * 0.0855),
-                                )),
+                              "SI",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: size.width * 0.0855),
+                            )),
                           ),
                         ),
-
-                        SizedBox(width: MediaQuery.of(context).size.width* 0.0861,),
-
+                        SizedBox(
+                          width: size.width * 0.0861,
+                        ),
                         TextButton(
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
                           ),
                           onPressed: () {
-                            Navigator.of(context, rootNavigator: true).pop(true);
+                            Navigator.of(context, rootNavigator: true)
+                                .pop(true);
                           },
                           child: Container(
-                            width: MediaQuery.of(context).size.width* 0.2778,
-                            height: MediaQuery.of(context).size.height* 0.1009,
+                            width: size.width * 0.2778,
+                            height: size.height * 0.1009,
                             decoration: BoxDecoration(
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.green.withOpacity(0.5),
                                   spreadRadius: 4,
                                   blurRadius: 10,
-                                  offset: Offset(0, 3),
+                                  offset: const Offset(0, 3),
                                 )
                               ],
-                              color:  Colors.green,
+                              color: Colors.green,
                               border: Border.all(
                                 color: const Color(0x60177103),
                               ),
                               borderRadius: BorderRadius.circular(5),
                             ),
-
                             child: Center(
                                 child: Text(
-                                  "NO",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: size.width * 0.0855),
-                                )),
+                              "NO",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: size.width * 0.0855),
+                            )),
                           ),
                         ),
                       ],
@@ -312,9 +332,9 @@ class _ZoneMenuState extends State<ZoneMenu> {
       transitionBuilder: (_, anim, __, child) {
         Tween<Offset> tween;
         if (anim.status == AnimationStatus.reverse) {
-          tween = Tween(begin: Offset(-1, 0), end: Offset.zero);
+          tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
         } else {
-          tween = Tween(begin: Offset(1, 0), end: Offset.zero);
+          tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
         }
 
         return SlideTransition(
@@ -327,5 +347,33 @@ class _ZoneMenuState extends State<ZoneMenu> {
       },
     );
   }
+}
 
+ListView shimmerEffect(Size size) {
+  return ListView.builder(
+      shrinkWrap: true,
+      padding: const EdgeInsets.symmetric(vertical: 30),
+      itemCount: 10,
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: shimmer_base,
+          highlightColor: shimmer_highlighted,
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 5,
+                        blurRadius: 4,
+                        offset: const Offset(0, 3))
+                  ]),
+              height: size.height * 0.0782,
+            ),
+          ),
+        );
+      });
 }

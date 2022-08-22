@@ -1,3 +1,11 @@
+class MyVideoMenuFormSubmitting extends MyVideosMenuState {
+  MyVideoMenuFormSubmitting(
+      {required List<String> categories,
+      required List<String> videos,
+      required List<String> videosNames})
+      : super(categories: categories, videos: videos, videosNames: videosNames);
+}
+
 class MyVideosMenuState {
   int totalCategories;
   int currentCategory;
@@ -9,9 +17,6 @@ class MyVideosMenuState {
 
   String namesubirfoto;
 
-
-
-
   MyVideosMenuState({
     this.totalCategories = 0,
     this.currentCategory = -1,
@@ -20,12 +25,7 @@ class MyVideosMenuState {
     required this.categories,
     required this.videos,
     required this.videosNames,
-
-    this.namesubirfoto='',
-
-
-
-
+    this.namesubirfoto = '',
   });
 
   MyVideosMenuState copyWith({
@@ -36,25 +36,18 @@ class MyVideosMenuState {
     List<String>? videos,
     List<String>? videosNames,
     String? searchedKeyword,
-
     String? name,
-
-
   }) {
-
     return MyVideosMenuState(
       totalCategories: totalCategories ?? this.totalCategories,
       currentCategory: currentCategory ?? this.currentCategory,
-      totalVideosInCurrentCategory: totalVideosInCurrentCategory ?? this.totalVideosInCurrentCategory,
-      categories: categories?? this.categories,
-      videos: videos?? this.videos,
-      videosNames: videosNames?? this.videosNames,
-      searchedKeyword: searchedKeyword?? this.searchedKeyword,
-
-      namesubirfoto: name?? this.namesubirfoto,
-
-
-
+      totalVideosInCurrentCategory:
+          totalVideosInCurrentCategory ?? this.totalVideosInCurrentCategory,
+      categories: categories ?? this.categories,
+      videos: videos ?? this.videos,
+      videosNames: videosNames ?? this.videosNames,
+      searchedKeyword: searchedKeyword ?? this.searchedKeyword,
+      namesubirfoto: name ?? namesubirfoto,
     );
   }
 }
