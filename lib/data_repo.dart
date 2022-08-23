@@ -1,5 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:flutter/foundation.dart';
 //import 'package:file_picker/file_picker.dart';
 
 import 'Dart:io';
@@ -18,11 +19,13 @@ class DataRepo {
       final ListResult result = await Amplify.Storage.list();
 
       items = result.items;
-      for (int i = 0; i < items.length; i++) {
-        print('Got items: ${items.elementAt(i).key}');
+      // for (int i = 0; i < items.length; i++) {
+      //   print('Got items: ${items.elementAt(i).key}');
+      // }
+    } on StorageException {
+      if (kDebugMode) {
+        print('$StorageException');
       }
-    } on StorageException catch (e) {
-      print('Error listing items: $e');
     }
   }
   //
@@ -237,10 +240,12 @@ class DataRepo {
     return true;
   }
 
-  Future<List<my_datastore.File>> listFilesByCategory(String category) async {
+  Future<List<my_datastore.File>> listFilesByCategory(
+      String category, int? page, int? limit) async {
     List<my_datastore.File> items = [];
     try {
       items = await Amplify.DataStore.query(my_datastore.File.classType,
+          pagination: QueryPagination(page: page!, limit: limit!),
           where: my_datastore.File.CATEGORY.eq(category));
     } catch (e) {
       print("Could not query DataStore: $e");

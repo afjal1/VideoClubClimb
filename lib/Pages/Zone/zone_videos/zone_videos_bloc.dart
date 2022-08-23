@@ -155,7 +155,9 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
   }
 
   FutureOr<void> _getVideoFiles(
-      GetVideoFiles event, Emitter<ZoneVideosState> emit) async {
+    GetVideoFiles event,
+    Emitter<ZoneVideosState> emit,
+  ) async {
     try {
       emit(FormSubmitting1(
           files: [],
@@ -164,7 +166,8 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
           categories: [],
           searchedVideos: []));
 
-      List<File> files = await dataRepo.listFilesByCategory(category);
+      List<File> files =
+          await dataRepo.listFilesByCategory(category, event.page, event.limit);
       List<String> images = [];
       List<String> url = [];
 
@@ -182,7 +185,9 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
           totalFiles: files.length,
           files: files,
           images: images,
-          videoUrls: url));
+          videoUrls: url,
+          firstFetch: true));
+
       //   emit(state.copyWith(formSubmissionState: FormSubmissionSuccessful()));
     } catch (e) {
       print('ZoneVideosBloc._getVideoFiles: $e');

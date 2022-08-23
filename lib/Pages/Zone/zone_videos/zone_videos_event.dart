@@ -3,7 +3,11 @@ import 'package:videoclubclimb/models/File.dart';
 
 abstract class ZoneVideosEvent {}
 
-class GetVideoFiles extends ZoneVideosEvent{}
+class GetVideoFiles extends ZoneVideosEvent {
+  int page;
+  int limit;
+  GetVideoFiles({required this.page, required this.limit});
+}
 
 class GetZoneVideosEvent extends ZoneVideosEvent {}
 
@@ -12,8 +16,7 @@ class CategoryClickedZoneVideosEvent extends ZoneVideosEvent {
   CategoryClickedZoneVideosEvent({required this.categoryIndex});
 }
 
-class DeleteAllCategoryVideo extends ZoneVideosEvent{}
-
+class DeleteAllCategoryVideo extends ZoneVideosEvent {}
 
 class DeleteVideoZoneButtonClickedEvent extends ZoneVideosEvent {
   int index;
@@ -51,7 +54,7 @@ class Search extends ZoneVideosEvent {
   Search({this.grado});
 }
 
-class GetImage extends ZoneVideosEvent{
+class GetImage extends ZoneVideosEvent {
   File file;
 
   GetImage({required this.file});

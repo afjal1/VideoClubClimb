@@ -11,11 +11,12 @@ class FormSubmitting1 extends ZoneVideosState {
       required List<String> videoUrls,
       required List<String> categories})
       : super(
-            files: files,
-            searchedVideos: searchedVideos,
-            images: images,
-            videoUrls: videoUrls,
-            categories: categories);
+          files: files,
+          searchedVideos: searchedVideos,
+          images: images,
+          videoUrls: videoUrls,
+          categories: categories,
+        );
 }
 
 class ZoneVideosState {
@@ -33,6 +34,7 @@ class ZoneVideosState {
   int currentCategory;
   int totalVideosInCurrentCategory;
   List<String> categories;
+  bool? firstFetch;
 
   String searchedKeyword;
 
@@ -48,6 +50,7 @@ class ZoneVideosState {
 
     required this.files,
     this.totalFiles = 0,
+    this.firstFetch,
     required this.searchedVideos,
     this.searchVideoUrls = const [],
     this.searchImages = const [],
@@ -81,6 +84,7 @@ class ZoneVideosState {
     /// ================
 
     int? totalCategories,
+    bool? firstFetch,
     int? currentCategory,
     int? totalVideosInCurrentCategory,
     List<String>? categories,
@@ -92,6 +96,7 @@ class ZoneVideosState {
     return ZoneVideosState(
       /// NEW
       searchVideoUrls: searchVideoUrls ?? this.searchVideoUrls,
+
       searchImages: searchImages ?? this.searchImages,
       files: files ?? this.files,
       totalFiles: totalFiles ?? this.totalFiles,
@@ -101,6 +106,7 @@ class ZoneVideosState {
 
       /// ==========
       totalCategories: totalCategories ?? this.totalCategories,
+      firstFetch: firstFetch ?? this.firstFetch,
       currentCategory: currentCategory ?? this.currentCategory,
       totalVideosInCurrentCategory:
           totalVideosInCurrentCategory ?? this.totalVideosInCurrentCategory,
