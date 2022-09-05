@@ -149,6 +149,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_ui.dart';
 import 'package:videoclubclimb/models/FileType.dart';
@@ -245,6 +246,9 @@ class _MyVideosUIState extends State<MyVideosUI> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.orangeAccent,
+        statusBarIconBrightness: Brightness.dark));
 
     return Container(
       decoration: const BoxDecoration(
@@ -614,7 +618,7 @@ class _MyVideosUIState extends State<MyVideosUI> {
                                 .add(DeleteEverythingEvent());
                             Navigator.of(context, rootNavigator: true)
                                 .pop(true);
-                            //    context.read<VideosCubit>().showMyVideosMenu();
+                            Navigator.pop(context);
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.2083,
@@ -759,13 +763,9 @@ class _MyVideosUIState extends State<MyVideosUI> {
                           onPressed: () {
                             context.read<MyVideosBloc>().add(
                                 DeleteVideoButtonClickedEvent(index: index));
-
-                            // context
-                            //     .read<MyVideosBloc>()
-                            //     .add(LoadMyVideosEvent());
-
                             Navigator.of(context, rootNavigator: true)
                                 .pop(true);
+                            Navigator.pop(context);
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.2083,

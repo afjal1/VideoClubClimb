@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:videoclubclimb/Media/Videos/videos_cubit.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_bloc.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_event.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_state.dart';
@@ -33,6 +33,9 @@ class _ZoneMenuState extends State<ZoneMenu> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.orangeAccent,
+        statusBarIconBrightness: Brightness.dark));
 
     return Container(
       decoration: const BoxDecoration(
@@ -255,7 +258,7 @@ class _ZoneMenuState extends State<ZoneMenu> {
                                 .add(DeleteEverything());
                             Navigator.of(context, rootNavigator: true)
                                 .pop(true);
-                            context.read<VideosCubit>().showZoneMenu();
+                            //  context.read<VideosCubit>().showZoneMenu();
                           },
                           child: Container(
                             width: size.width * 0.2083,

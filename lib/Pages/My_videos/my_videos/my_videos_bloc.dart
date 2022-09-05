@@ -41,7 +41,6 @@ class MyVideosBloc extends Bloc<MyVideosEvent, MyVideosState> {
   FutureOr<void> _onDeleteVideoButtonClickedEvent(
       DeleteVideoButtonClickedEvent event, Emitter<MyVideosState> emit) async {
     dataRepo.deleteFile(state.items.elementAt(event.index));
-
     emit(state.copyWith());
   }
 

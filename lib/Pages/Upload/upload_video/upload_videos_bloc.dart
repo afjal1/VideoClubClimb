@@ -18,12 +18,12 @@ import '../../../data_repo.dart';
 class UploadVideoBloc extends Bloc<UploadVideoEvent, UploadVideoState> {
   //FilePickerResult? _result;
   DataRepo dataRepo;
-  String category = "";
+  // String category = "";
 
   File? _videoFile;
   File? _imageFile;
 
-  //late FilePickerResult? _imageresult;
+  ///late FilePickerResult? _imageresult;
 
   UploadVideoBloc({required this.dataRepo}) : super(UploadVideoState()) {
     on<FilePickerUploadVideoButtonClickedEvent>(_filePickerButtonClicked);
@@ -89,9 +89,9 @@ class UploadVideoBloc extends Bloc<UploadVideoEvent, UploadVideoState> {
 
     emit(state.copyWith(formSubmissionState: FormSubmitting()));
     MediaInfo compressedVideo = await compressVideo(_videoFile!);
-
-    await dataRepo.datastoreUploadFile(event.fileName, category, event.desc,
-        event.grado, compressedVideo.file, _imageFile);
+    print('This is my  ${event.category}');
+    await dataRepo.datastoreUploadFile(event.fileName, event.category,
+        event.desc, event.grado, compressedVideo.file, _imageFile);
 
     emit(state.copyWith(formSubmissionState: FormSubmissionSuccessful()));
   }

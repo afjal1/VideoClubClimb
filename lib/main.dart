@@ -16,14 +16,16 @@ import 'models/ModelProvider.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.immersiveSticky,
-  );
-
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  //status bar color
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+  ));
 
   runApp(const MyApp());
 }
@@ -52,6 +54,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Video Club Climb',
       theme: ThemeData(
+          backgroundColor: Colors.white,
+          scaffoldBackgroundColor: Colors.white,
           sliderTheme: const SliderThemeData(
               thumbColor: Colors.green,
               activeTrackColor: Colors.green,

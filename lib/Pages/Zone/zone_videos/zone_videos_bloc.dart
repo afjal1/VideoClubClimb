@@ -198,6 +198,12 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
       DeleteAllCategoryVideo event, Emitter<ZoneVideosState> emit) async {
     // String id=await authRepo.getUserIDFromAttributes();
 
+    emit(FormSubmitting1(
+        files: [],
+        images: [],
+        videoUrls: [],
+        categories: [],
+        searchedVideos: []));
     await dataRepo.deleteAllCategory(category);
   }
 }

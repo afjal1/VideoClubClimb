@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:videoclubclimb/Pages/Upload/upload_menu/upload_video_menu_bloc.dart';
 import 'package:videoclubclimb/Pages/Upload/upload_menu/upload_video_menu_event.dart';
@@ -30,7 +31,9 @@ class _UploadVideoMenuState extends State<UploadVideoMenu> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
+SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.orangeAccent,
+        statusBarIconBrightness: Brightness.dark));
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
@@ -108,6 +111,7 @@ class _UploadVideoMenuState extends State<UploadVideoMenu> {
                                       .read<UploadVideoMenuBloc>()
                                       .state
                                       .categories[index];
+                                  print(category);
                                   // context
                                   //     .read<VideosCubit>()
                                   //     .showUploadVideos(category: category);
@@ -119,7 +123,9 @@ class _UploadVideoMenuState extends State<UploadVideoMenu> {
                                               UploadVideoBloc(
                                             dataRepo: context.read<DataRepo>(),
                                           ),
-                                          child: const UploadVideo(),
+                                          child: UploadVideo(
+                                            category: category,
+                                          ),
                                         ),
                                       ));
                                 },

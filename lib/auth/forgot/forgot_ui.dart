@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,6 +17,9 @@ class ForgotPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.orange,
+        statusBarIconBrightness: Brightness.dark));
     return Scaffold(
       backgroundColor: Colors.orange,
       body: BlocProvider(
@@ -42,27 +46,26 @@ class ForgotPage extends StatelessWidget {
           _showSnackBar(context, formSubmissionState.exception.toString());
         }
       },
-      child: Builder(
-        builder: (context) {
-          return Form(
-            key: _formKey,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width* 0.1111),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height* 0.0134),
-                  _emailField(),
-                  SizedBox(height: MediaQuery.of(context).size.height* 0.0672),
-                  _forgotButton(),
-                  SizedBox(height: MediaQuery.of(context).size.height* 0.0134),
-                  _backButton(),
-                ],
-              ),
+      child: Builder(builder: (context) {
+        return Form(
+          key: _formKey,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.1111),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height * 0.0134),
+                _emailField(),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.0672),
+                _forgotButton(),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.0134),
+                _backButton(),
+              ],
             ),
-          );
-        }
-      ),
+          ),
+        );
+      }),
     );
   }
 
@@ -74,32 +77,42 @@ class ForgotPage extends StatelessWidget {
           keyboardType: TextInputType.emailAddress, //tipo de teclado
           cursorColor: Colors.white,
 
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             labelText: 'Email',
-            labelStyle: TextStyle(color: Colors.white, fontSize: size.width * 0.0513),
-            floatingLabelStyle: TextStyle(color: Colors.blue, fontSize: size.width * 0.0513),
+            labelStyle:
+                TextStyle(color: Colors.white, fontSize: size.width * 0.0513),
+            floatingLabelStyle:
+                TextStyle(color: Colors.blue, fontSize: size.width * 0.0513),
             floatingLabelBehavior: FloatingLabelBehavior.auto,
-            errorStyle: TextStyle(
+            errorStyle: const TextStyle(
               color: Colors.white,
             ),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: BorderSide(color: Colors.white)),
-            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: BorderSide(color: Colors.blue)),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: BorderSide(color: Colors.white)),
-            prefixIcon: Icon(
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.white)),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.blue)),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: const BorderSide(color: Colors.white)),
+            prefixIcon: const Icon(
               Icons.person,
               color: Colors.white,
             ),
             hintText: 'Email',
-            hintStyle: TextStyle(color: Colors.transparent),
+            hintStyle: const TextStyle(color: Colors.transparent),
           ),
-          validator: (value) => state.isValidEmail ? null : 'Dirección Email no valida',
-          onChanged: (value) => context.read<ForgotBloc>().add(ForgotUsernameChangedEvent(email: value)),
+          validator: (value) =>
+              state.isValidEmail ? null : 'Dirección Email no valida',
+          onChanged: (value) => context
+              .read<ForgotBloc>()
+              .add(ForgotUsernameChangedEvent(email: value)),
         );
       },
     );
   }
-
 
   Widget _forgotButton() {
     return BlocBuilder<ForgotBloc, ForgotState>(builder: (context, state) {
@@ -112,7 +125,7 @@ class ForgotPage extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             primary: Colors.teal,
             onPrimary: Colors.white,
-            elevation: MediaQuery.of(context).size.height* 0.0067,
+            elevation: MediaQuery.of(context).size.height * 0.0067,
           ),
           autofocus: true,
           child: const Text('Reiniciar contraseña'),
@@ -137,7 +150,7 @@ class ForgotPage extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             primary: Colors.teal,
             onPrimary: Colors.white,
-            elevation: MediaQuery.of(context).size.height* 0.0067,
+            elevation: MediaQuery.of(context).size.height * 0.0067,
           ),
           autofocus: true,
           child: const Text('Atras'),
@@ -149,16 +162,18 @@ class ForgotPage extends StatelessWidget {
     });
   }
 
-
   Widget _login_tButton(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Container(
-        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height* 0.0134,),
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height * 0.0134,
+        ),
         child: TextButton(
           child: Text(
             '¿No tienes cuenta? Registrate',
-            style: TextStyle(color: Colors.white, fontSize: size.width * 0.04845),
+            style:
+                TextStyle(color: Colors.white, fontSize: size.width * 0.04845),
           ),
           onPressed: () {
             context.read<AuthCubit>().showSignup();

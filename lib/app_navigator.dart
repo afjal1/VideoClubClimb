@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:videoclubclimb/session_cubit.dart';
@@ -16,6 +17,9 @@ class AppNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: const Color(0xFF0000FF),
+        statusBarIconBrightness: Brightness.dark));
     return BlocBuilder<SessionCubit, SessionState>(
       builder: (context, state) {
         return Navigator(
