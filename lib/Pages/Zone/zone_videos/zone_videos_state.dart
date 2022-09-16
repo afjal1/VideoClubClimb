@@ -1,3 +1,6 @@
+// ignore_for_file: must_be_immutable
+
+import 'package:equatable/equatable.dart';
 import 'package:videoclubclimb/auth/form_submission_state.dart';
 import 'package:videoclubclimb/models/File.dart';
 
@@ -17,11 +20,12 @@ class FormSubmitting1 extends ZoneVideosState {
           videoUrls: videoUrls,
           categories: categories,
         );
+
+  @override
+  List<Object> get props => [];
 }
 
-class ZoneVideosState {
-  /// New
-
+class ZoneVideosState extends Equatable {
   List<File> files;
   int totalFiles;
   List<File> searchedVideos;
@@ -44,6 +48,9 @@ class ZoneVideosState {
   FormSubmissionState formSubmissionState;
   List<String> searchImages;
   List<String> searchVideoUrls;
+
+  @override
+  List<Object> get props => [];
 
   ZoneVideosState({
     /// new

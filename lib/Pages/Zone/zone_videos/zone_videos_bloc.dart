@@ -116,6 +116,12 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
   }
 
   FutureOr<void> _search(Search event, Emitter<ZoneVideosState> emit) {
+    emit(FormSubmitting1(
+        files: [],
+        images: [],
+        videoUrls: [],
+        categories: [],
+        searchedVideos: []));
     List<File> searchedVideos = [];
     List<String>? searchImages = [];
     List<String>? searchVideoUrls = [];
@@ -189,15 +195,11 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
           firstFetch: true));
 
       //   emit(state.copyWith(formSubmissionState: FormSubmissionSuccessful()));
-    } catch (e) {
-      print('ZoneVideosBloc._getVideoFiles: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> _deleteAllCategory(
       DeleteAllCategoryVideo event, Emitter<ZoneVideosState> emit) async {
-    // String id=await authRepo.getUserIDFromAttributes();
-
     emit(FormSubmitting1(
         files: [],
         images: [],

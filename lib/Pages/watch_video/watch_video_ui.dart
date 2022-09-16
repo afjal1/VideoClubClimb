@@ -1,5 +1,6 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:videoclubclimb/Pages/watch_video/watch_video_bloc.dart';
 import 'package:videoclubclimb/Pages/watch_video/watch_video_event.dart';
 import 'package:videoclubclimb/Pages/watch_video/watch_video_state.dart';
@@ -38,11 +39,17 @@ class _WatchVideoState extends State<WatchVideo> {
         allowPlaybackSpeedChanging: true,
         videoPlayerController: VideoPlayerController.network(
             context.watch<WatchVideosBloc>().state.url),
-        fullScreenByDefault: true,
+        fullScreenByDefault: false,
         autoInitialize: true,
         autoPlay: true,
         looping: false,
         showControls: true,
+        deviceOrientationsAfterFullScreen: [
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ],
         errorBuilder: (BuildContext context, error) {
           return Center(
             child: Text(error),
