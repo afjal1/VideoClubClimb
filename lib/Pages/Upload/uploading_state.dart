@@ -1,10 +1,5 @@
-import 'package:equatable/equatable.dart';
-
-class UploadingState extends Equatable {
+class UploadingState {
   const UploadingState();
-
-  @override
-  List<Object> get props => [];
 }
 
 class InitialUploadState extends UploadingState {

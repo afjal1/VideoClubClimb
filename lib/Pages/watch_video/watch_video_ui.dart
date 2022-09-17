@@ -30,6 +30,7 @@ class _WatchVideoState extends State<WatchVideo> {
   @override
   void dispose() {
     chewieController.dispose();
+    chewieController.pause();
     super.dispose();
   }
 
