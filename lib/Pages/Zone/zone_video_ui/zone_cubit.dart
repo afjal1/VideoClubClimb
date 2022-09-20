@@ -1,9 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:videoclubclimb/Pages/Zone/new_zone_ui/zone_bloc_provider.dart';
+import 'package:videoclubclimb/Pages/Zone/zone_video_ui/zone_bloc_provider.dart';
 import 'package:videoclubclimb/models/File.dart';
 
 import '../../../data_repo.dart';
-import '../zone_videos/zone_videos_bloc.dart';
 import 'zone_state.dart';
 
 class ZoneHereCubit extends Cubit<ZoneHereState> {

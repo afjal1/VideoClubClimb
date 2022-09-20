@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../zone_videos/zone_videos_bloc.dart';
+import 'zone_bloc_provider.dart';
 
 abstract class ZoneHereState extends Equatable {
   const ZoneHereState();

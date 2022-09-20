@@ -7,8 +7,8 @@ import 'package:videoclubclimb/Pages/Homepage/homepage_ui.dart';
 import 'package:videoclubclimb/Pages/My_videos/my_videos_menu/my_videos_menu_ui.dart';
 import 'package:videoclubclimb/Pages/Upload/upload_menu/upload_video_menu_ui.dart';
 import 'package:videoclubclimb/Pages/Upload/upload_video/upload_videos_ui.dart';
+import 'package:videoclubclimb/Pages/Zone/zone_video_ui/zone_here.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_ui.dart';
-import 'package:videoclubclimb/Pages/Zone/zone_videos/zone_videos_ui.dart';
 
 import '../../Pages/watch_video/watch_video_bloc.dart';
 import '../../Pages/watch_video/watch_video_ui.dart';
@@ -61,7 +61,7 @@ class VideosNavigator extends StatelessWidget {
 
             if (page.child is ZoneMenu) {}
 
-            if (page.child is ZoneVideo) {}
+            if (page.child is NewZoneVideo) {}
 
             if (page.child is MyVideosMenu) {}
 

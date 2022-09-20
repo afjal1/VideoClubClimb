@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:videoclubclimb/Pages/Zone/new_zone_ui/zone_cubit.dart';
-import 'package:videoclubclimb/Pages/Zone/new_zone_ui/zone_state.dart';
+import 'package:videoclubclimb/Pages/Zone/zone_video_ui/zone_cubit.dart';
+import 'package:videoclubclimb/Pages/Zone/zone_video_ui/zone_state.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_ui.dart';
-import 'package:videoclubclimb/Pages/Zone/zone_videos/zone_videos_bloc.dart';
 import '../../../data_repo.dart';
 import '../../../models/File.dart';
 import '../../watch_video/watch_video_bloc.dart';
 import '../../watch_video/watch_video_ui.dart';
+import 'zone_bloc_provider.dart';
 
 class NewZoneVideo extends StatefulWidget {
   final String? category;

@@ -1,6 +1,5 @@
 import '../../../data_repo.dart';
 import '../../../models/File.dart';
-import '../zone_videos/zone_videos_bloc.dart';
 
 class ZoneHereDataProvider {
   DataRepo dataRepo = DataRepo();
@@ -39,4 +38,47 @@ class ZoneHereDataProvider {
       throw Exception('Error UNable');
     }
   }
+}
+
+int mapGradeToIndex(String? newValue) {
+  int gradoIndex = 0;
+
+  if (newValue == '4') {
+    gradoIndex = 0;
+  } else if (newValue == '5') {
+    gradoIndex = 1;
+  } else if (newValue == '5+') {
+    gradoIndex = 2;
+  } else if (newValue == '6a') {
+    gradoIndex = 3;
+  } else if (newValue == '6a+') {
+    gradoIndex = 4;
+  } else if (newValue == '6b') {
+    gradoIndex = 5;
+  } else if (newValue == '6b+') {
+    gradoIndex = 6;
+  } else if (newValue == '6c') {
+    gradoIndex = 7;
+  } else if (newValue == '6c+') {
+    gradoIndex = 8;
+  } else if (newValue == '7a') {
+    gradoIndex = 9;
+  } else if (newValue == '7a+') {
+    gradoIndex = 10;
+  } else if (newValue == '7b') {
+    gradoIndex = 11;
+  } else if (newValue == '7b+') {
+    gradoIndex = 12;
+  }
+
+  return gradoIndex;
+}
+
+class TotalFile {
+  final List<File>? files;
+  final List<String>? images;
+  final List<String>? videoUrls;
+  final bool? firstFetch;
+
+  TotalFile({this.files, this.images, this.videoUrls, this.firstFetch});
 }

@@ -5,10 +5,10 @@ import 'package:shimmer/shimmer.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_bloc.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_event.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_state.dart';
-import 'package:videoclubclimb/Pages/Zone/new_zone_ui/zone_here.dart';
+import 'package:videoclubclimb/Pages/Zone/zone_video_ui/zone_here.dart';
 
-import '../new_zone_ui/zone_bloc_provider.dart';
-import '../new_zone_ui/zone_cubit.dart';
+import '../zone_video_ui/zone_bloc_provider.dart';
+import '../zone_video_ui/zone_cubit.dart';
 
 Color shimmer_base = Colors.grey.shade200;
 
