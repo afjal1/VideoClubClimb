@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -13,6 +14,9 @@ import 'zone_videos_event.dart';
 import 'zone_videos_state.dart';
 
 int page = 0;
+List<File>? files = [];
+List<String>? videoUrl = [];
+List<String>? images = [];
 
 class ZoneVideo extends StatefulWidget {
   const ZoneVideo({Key? key}) : super(key: key);
@@ -28,9 +32,6 @@ class ZoneVideoState extends State<ZoneVideo> {
   String searchByValue = 'Name';
   String gradoValue = '4';
 
-  List<File>? files = [];
-  List<String>? videoUrl = [];
-  List<String>? images = [];
   bool isFirst = true;
 
   List<File>? searchFiles = [];
@@ -51,7 +52,6 @@ class ZoneVideoState extends State<ZoneVideo> {
           _scrollController.position.pixels != 0)) {
         if (_scrollController.position.pixels != 0 &&
             context.read<ZoneVideosBloc>().state.files.isNotEmpty) {
-          print('Hello Afjal');
           setState(() {
             page++;
 
@@ -79,6 +79,9 @@ class ZoneVideoState extends State<ZoneVideo> {
     _scrollController.dispose();
     page = 0;
     files = [];
+    files = [];
+    videoUrl = [];
+    images = [];
     super.dispose();
   }
 
@@ -129,17 +132,17 @@ class ZoneVideoState extends State<ZoneVideo> {
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                               ),
-                              child: TextFormField(
+                              child: TextField(
+                                controller: searchController,
                                 decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.only(
-                                    top: size.height * 0.0269,
-                                    left: size.width * 0.0139,
+                                  hintStyle: const TextStyle(
+                                    color: Colors.white,
                                   ),
                                   hintText: 'Search',
                                   suffixIcon: IconButton(
                                     icon: Padding(
                                       padding: EdgeInsets.only(
-                                        top: size.height * 0.0134,
+                                        top: size.height * 0.0264,
                                       ),
                                       child: const Icon(Icons.search),
                                     ),
@@ -153,7 +156,7 @@ class ZoneVideoState extends State<ZoneVideo> {
                                 onChanged: (value) {
                                   context
                                       .read<ZoneVideosBloc>()
-                                      .add(SearchKeywordChanged(value: value));
+                                      .add(SearchKeywordChanged(value: "4"));
                                 },
                               ),
                             ),
@@ -201,9 +204,12 @@ class ZoneVideoState extends State<ZoneVideo> {
                                     padding: EdgeInsets.only(
                                       top: size.height * 0.0134,
                                     ),
-                                    child: const Icon(Icons.search),
+                                    child: const Icon(
+                                      Icons.search,
+                                    ),
                                   ),
                                   onPressed: () {
+                                    print('Thiais  $gradoValue');
                                     context
                                         .read<ZoneVideosBloc>()
                                         .add(Search(grado: gradoValue));
@@ -287,8 +293,6 @@ class ZoneVideoState extends State<ZoneVideo> {
           child: BlocBuilder<ZoneVideosBloc, ZoneVideosState>(
             builder: (BuildContext context, state) {
               int loadingWidget = 0;
-              // print('objectyg');
-              // print('objecthjhj');
 
               if (state is FormSubmitting1 && files!.isEmpty) {
                 return videoShimmerEffect(size);
@@ -319,240 +323,253 @@ class ZoneVideoState extends State<ZoneVideo> {
 
               }
               {
-                return GridView.builder(
+                return DraggableScrollbar.semicircle(
+                  alwaysVisibleScrollThumb: true,
+                  labelTextBuilder: (double offset) => Text("${offset ~/ 100}"),
                   controller: _scrollController,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 0.7,
-                  ),
-                  itemCount: state.isSearching
-                      ? searchFiles!.length
-                      : files!.length + loadingWidget,
-                  itemBuilder: (context, index) {
-                    if (index > files!.length) {
-                      _scrollController
-                          .jumpTo(_scrollController.position.maxScrollExtent);
-                      return const Center(
-                          child: Padding(
-                        padding: EdgeInsets.only(bottom: 18.0),
-                        child: CircularProgressIndicator(),
-                      ));
-                    } else {
-                      return index == files!.length
-                          ? const Center(
-                              child: Padding(
-                              padding: EdgeInsets.only(bottom: 18.0),
-                              child: CircularProgressIndicator(),
-                            ))
-                          : InkWell(
-                              splashColor: Colors.orange,
-                              onTap: () {
-                                if (state.isSearching) {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => BlocProvider(
-                                          create: (BuildContext context) =>
-                                              WatchVideosBloc(
-                                            dataRepo: context.read<DataRepo>(),
-                                            category: searchFiles!
-                                                .elementAt(index)
-                                                .category!,
-                                            name: searchFiles!
-                                                .elementAt(index)
-                                                .name!,
-                                            UIName: searchFiles!
-                                                .elementAt(index)
-                                                .name!,
-                                            url: searchVideoUrl!
-                                                .elementAt(index),
-                                          ),
-                                          child: const WatchVideo(),
-                                        ),
-                                      ));
-                                } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => BlocProvider(
-                                          create: (BuildContext context) =>
-                                              WatchVideosBloc(
-                                            dataRepo: context.read<DataRepo>(),
-                                            category: files!
-                                                .elementAt(index)
-                                                .category!,
-                                            name: files!.elementAt(index).name!,
-                                            UIName:
-                                                files!.elementAt(index).name!,
-                                            url: videoUrl!.elementAt(index),
-                                          ),
-                                          child: const WatchVideo(),
-                                        ),
-                                      ));
-                                }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
-                                      blurRadius: 10,
-                                      spreadRadius: 5,
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      decoration: const BoxDecoration(),
-                                      child: SizedBox(
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          child: FadeInImage(
-                                            image: CachedNetworkImageProvider(
-                                              state.isSearching
-                                                  ? searchImages![index]
-                                                  : images![index],
+                  child: GridView.builder(
+                    controller: _scrollController,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.7,
+                    ),
+                    itemCount: state.isSearching
+                        ? searchFiles!.length
+                        : files!.length + loadingWidget,
+                    itemBuilder: (context, index) {
+                      if (index > files!.length) {
+                        _scrollController
+                            .jumpTo(_scrollController.position.maxScrollExtent);
+                        return const Center(
+                            child: Padding(
+                          padding: EdgeInsets.only(bottom: 18.0),
+                          child: CircularProgressIndicator(),
+                        ));
+                      } else {
+                        return index == files!.length
+                            ? const Center(
+                                child: Padding(
+                                padding: EdgeInsets.only(bottom: 18.0),
+                                child: CircularProgressIndicator(),
+                              ))
+                            : InkWell(
+                                splashColor: Colors.orange,
+                                onTap: () {
+                                  if (state.isSearching) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BlocProvider(
+                                            create: (BuildContext context) =>
+                                                WatchVideosBloc(
+                                              dataRepo:
+                                                  context.read<DataRepo>(),
+                                              category: searchFiles!
+                                                  .elementAt(index)
+                                                  .category!,
+                                              name: searchFiles!
+                                                  .elementAt(index)
+                                                  .name!,
+                                              UIName: searchFiles!
+                                                  .elementAt(index)
+                                                  .name!,
+                                              url: searchVideoUrl!
+                                                  .elementAt(index),
                                             ),
-                                            imageErrorBuilder:
-                                                (context, error, stackTrace) {
-                                              return Center(
-                                                child: Image.asset(
-                                                  'assets/glogo.png',
-                                                  fit: BoxFit.fill,
-                                                ),
-                                              );
-                                            },
-                                            placeholder: const AssetImage(
-                                                'assets/glogo.png'),
-                                            fit: BoxFit.fill,
+                                            child: const WatchVideo(),
+                                          ),
+                                        ));
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BlocProvider(
+                                            create: (BuildContext context) =>
+                                                WatchVideosBloc(
+                                              dataRepo:
+                                                  context.read<DataRepo>(),
+                                              category: files!
+                                                  .elementAt(index)
+                                                  .category!,
+                                              name:
+                                                  files!.elementAt(index).name!,
+                                              UIName:
+                                                  files!.elementAt(index).name!,
+                                              url: videoUrl!.elementAt(index),
+                                            ),
+                                            child: const WatchVideo(),
+                                          ),
+                                        ));
+                                  }
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 10,
+                                        spreadRadius: 5,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: const BoxDecoration(),
+                                        child: SizedBox(
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            child: FadeInImage(
+                                              image: CachedNetworkImageProvider(
+                                                state.isSearching
+                                                    ? searchImages![index]
+                                                    : images![index],
+                                              ),
+                                              imageErrorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return Center(
+                                                  child: Image.asset(
+                                                    'assets/glogo.png',
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                                );
+                                              },
+                                              placeholder: const AssetImage(
+                                                  'assets/glogo.png'),
+                                              fit: BoxFit.fill,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal: size.width * 0.0278),
-                                      child: Row(
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                height: size.height * 0.0054,
-                                              ),
-
-                                              SizedBox(
-                                                width: size.width * 0.2778,
-                                                child: Text(
-                                                  !state.isSearching
-                                                      ? files![index].name!
-                                                      : searchFiles![index]
-                                                          .name!,
-                                                  style: TextStyle(
-                                                    fontSize:
-                                                        size.width * 0.04275,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                  textAlign: TextAlign.start,
-                                                ),
-                                              ),
-
-                                              ///nombre
-
-                                              SizedBox(
-                                                height: size.height * 0.0094,
-                                              ),
-
-                                              SizedBox(
-                                                width: size.width * 0.2778,
-                                                child: Text(
-                                                  !state.isSearching
-                                                      ? files![index]
-                                                          .description!
-                                                      : searchFiles![index]
-                                                          .description!,
-                                                  style: const TextStyle(),
-                                                ),
-                                              ),
-
-                                              SizedBox(
-                                                height: size.height * 0.0054,
-                                              ),
-                                            ],
-                                          ),
-                                          const Spacer(),
-                                          Container(
-                                            child: Column(
+                                      Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: size.width * 0.0278),
+                                        child: Row(
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Stack(
-                                                  alignment: Alignment.center,
-                                                  children: [
-                                                    Container(
-                                                      height:
-                                                          size.height * 0.0471,
-                                                      width:
-                                                          size.width * 0.0972,
-                                                      decoration: BoxDecoration(
-                                                          shape: BoxShape
-                                                              .rectangle,
-                                                          boxShadow: const [
-                                                            BoxShadow(
-                                                              color:
-                                                                  Colors.orange,
-                                                              blurRadius: 5.0,
-                                                              spreadRadius: 2.0,
-                                                            ),
-                                                          ],
-                                                          color:
-                                                              getColorFromGrade(
-                                                                  files![index]
-                                                                      .grade!),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          border: Border.all(
-                                                              width:
-                                                                  size.width *
-                                                                      0.0028,
-                                                              color: Colors
-                                                                  .orange)),
+                                                SizedBox(
+                                                  height: size.height * 0.0054,
+                                                ),
+
+                                                SizedBox(
+                                                  width: size.width * 0.2778,
+                                                  child: Text(
+                                                    !state.isSearching
+                                                        ? files![index].name!
+                                                        : searchFiles![index]
+                                                            .name!,
+                                                    style: TextStyle(
+                                                      fontSize:
+                                                          size.width * 0.04275,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
-                                                    Text(
-                                                      !state.isSearching
-                                                          ? getTextFromGrade(
-                                                              files![index]
-                                                                  .grade!)
-                                                          : getTextFromGrade(state
-                                                              .searchedVideos[
-                                                                  index]
-                                                              .grade!),
-                                                      style: const TextStyle(
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                ),
+
+                                                ///nombre
+
+                                                SizedBox(
+                                                  height: size.height * 0.0094,
+                                                ),
+
+                                                SizedBox(
+                                                  width: size.width * 0.2778,
+                                                  child: Text(
+                                                    !state.isSearching
+                                                        ? files![index]
+                                                            .description!
+                                                        : searchFiles![index]
+                                                            .description!,
+                                                    style: const TextStyle(),
+                                                  ),
+                                                ),
+
+                                                SizedBox(
+                                                  height: size.height * 0.0054,
+                                                ),
                                               ],
                                             ),
-                                          ),
-                                        ],
+                                            const Spacer(),
+                                            Container(
+                                              child: Column(
+                                                children: [
+                                                  Stack(
+                                                    alignment: Alignment.center,
+                                                    children: [
+                                                      Container(
+                                                        height: size.height *
+                                                            0.0471,
+                                                        width:
+                                                            size.width * 0.0972,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .rectangle,
+                                                                boxShadow: const [
+                                                                  BoxShadow(
+                                                                    color: Colors
+                                                                        .orange,
+                                                                    blurRadius:
+                                                                        5.0,
+                                                                    spreadRadius:
+                                                                        2.0,
+                                                                  ),
+                                                                ],
+                                                                color: getColorFromGrade(
+                                                                    files![index]
+                                                                        .grade!),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                                border: Border.all(
+                                                                    width: size
+                                                                            .width *
+                                                                        0.0028,
+                                                                    color: Colors
+                                                                        .orange)),
+                                                      ),
+                                                      Text(
+                                                        !state.isSearching
+                                                            ? getTextFromGrade(
+                                                                files![index]
+                                                                    .grade!)
+                                                            : getTextFromGrade(state
+                                                                .searchedVideos[
+                                                                    index]
+                                                                .grade!),
+                                                        style: const TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                    }
-                  },
+                              );
+                      }
+                    },
+                  ),
                 );
               }
             },

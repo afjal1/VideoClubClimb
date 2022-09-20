@@ -21,7 +21,7 @@ class FormSubmitting1 extends ZoneVideosState {
         );
 }
 
-class ZoneVideosState  {
+class ZoneVideosState {
   List<File> files;
   int totalFiles;
   List<File> searchedVideos;
@@ -44,6 +44,25 @@ class ZoneVideosState  {
   FormSubmissionState formSubmissionState;
   List<String> searchImages;
   List<String> searchVideoUrls;
+
+  // @override
+  // List<Object> get props => [
+  //       files,
+  //       totalFiles,
+  //       searchedVideos,
+  //       images,
+  //       videoUrls,
+  //       totalCategories,
+  //       currentCategory,
+  //       totalVideosInCurrentCategory,
+  //       categories,
+  //       searchedKeyword,
+  //       isSearching,
+  //       searchBy,
+  //       formSubmissionState,
+  //       searchImages,
+  //       searchVideoUrls,
+  //     ];
 
   ZoneVideosState({
     /// new
@@ -164,3 +183,12 @@ class ZoneVideosState  {
     );
   }
 }
+
+//New Way
+
+//cubit
+
+
+//
+
+

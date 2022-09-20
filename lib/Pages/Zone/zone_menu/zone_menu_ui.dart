@@ -5,10 +5,10 @@ import 'package:shimmer/shimmer.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_bloc.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_event.dart';
 import 'package:videoclubclimb/Pages/Zone/zone_menu/zone_menu_state.dart';
+import 'package:videoclubclimb/Pages/Zone/new_zone_ui/zone_here.dart';
 
-import '../../../data_repo.dart';
-import '../zone_videos/zone_videos_bloc.dart';
-import '../zone_videos/zone_videos_ui.dart';
+import '../new_zone_ui/zone_bloc_provider.dart';
+import '../new_zone_ui/zone_cubit.dart';
 
 Color shimmer_base = Colors.grey.shade200;
 
@@ -130,12 +130,12 @@ class _ZoneMenuState extends State<ZoneMenu> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => BlocProvider(
-                                          create: (BuildContext context) =>
-                                              ZoneVideosBloc(
-                                            dataRepo: context.read<DataRepo>(),
+                                          create: (context) => ZoneHereCubit(
+                                              repository:
+                                                  ZoneHereDataProvider()),
+                                          child: NewZoneVideo(
                                             category: category,
                                           ),
-                                          child: const ZoneVideo(),
                                         ),
                                       ));
                                 },

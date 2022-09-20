@@ -126,7 +126,7 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
     List<String>? searchImages = [];
     List<String>? searchVideoUrls = [];
 
-    if (state.searchBy == SearchBy.name) {
+    if (state.searchBy == SearchBy.grado) {
       for (int i = 0; i < state.files.length; i++) {
         if (state.files[i].name!.contains(state.searchedKeyword)) {
           searchedVideos.add(state.files[i]);
@@ -134,7 +134,7 @@ class ZoneVideosBloc extends Bloc<ZoneVideosEvent, ZoneVideosState> {
           searchVideoUrls.add(state.videoUrls[i]);
         }
       }
-    } else if (state.searchBy == SearchBy.grado) {
+    } else if (state.searchBy == SearchBy.name) {
       int grade = mapGradeToIndex(event.grado);
 
       for (int i = 0; i < state.files.length; i++) {
@@ -242,4 +242,13 @@ int mapGradeToIndex(String? newValue) {
   }
 
   return gradoIndex;
+}
+
+class TotalFile {
+  final List<File>? files;
+  final List<String>? images;
+  final List<String>? videoUrls;
+  final bool? firstFetch;
+
+  TotalFile({this.files, this.images, this.videoUrls, this.firstFetch});
 }
